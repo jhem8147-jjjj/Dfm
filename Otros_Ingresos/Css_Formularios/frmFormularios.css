@@ -1,0 +1,61 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+body,td,th {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
+
+
+}
+body {
+	margin-left: 12px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.TABLA {
+	color: #000;
+}
+.LLAMANDO {
+	color: #FFF;
+	font-size: 16px;
+	font-weight: bold;
+}
+.SUBTITULOS {
+	color: #06F;
+}
+a:link {
+	color: #06F;
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+	color: #06F;
+}
+a:hover {
+	text-decoration: underline;
+	color: #090;
+}
+a:active {
+	text-decoration: none;
+	color: #06F;
+}
+.SEN {
+	color: #0F0;
+}
+.TITULO {
+	font-weight: bold;
+	font-size: 13px;
+	color: #F90;
+}
+.PIE {
+	color: #090;
+	font-weight: bold;
+}
+.TICKETS {
+
+	font-weight: bold;
+	color: #060;
+	font-size: 24px;
+}

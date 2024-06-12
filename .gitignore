@@ -1,0 +1,42 @@
+# Created by https://www.toptal.com/developers/gitignore/api/phpunit
+# Edit at https://www.toptal.com/developers/gitignore?templates=phpunit
+
+### PHPUnit ###
+# Covers PHPUnit
+# Reference: https://phpunit.de/
+
+# Generated files
+.phpunit.result.cache
+.phpunit.cache
+
+# PHPUnit
+/app/phpunit.xml
+/phpunit.xml
+
+# Build data
+/build/
+/Otros_Ingresos/Administracion_Usuarios_Pdf/*
+/Otros_Ingresos/Administracion_Usuarios_Pdf/css/fonts/*
+/Otros_Ingresos/Administracion_Usuarios_Pdf/skins/*
+/Otros_Ingresos/Administracion_Usuarios_Pdf/skins/
+/Otros_Ingresos/Cambio_Nombre/Pdf_Cambio_Nombre/
+/Otros_Ingresos/Complemento_Contribuyentes/Pdf_Complementos/
+/Otros_Ingresos/Documentos_Descargas/
+/Otros_Ingresos/Emision_Comprobante_Pago_Anual/tcpdf/
+/Otros_Ingresos/Emision_Comprobante_pago_CN_CC/tcpdf/
+/Otros_Ingresos/Importar_Excel_Dfm/
+/Otros_Ingresos/Pdf_Fpdf/
+/Otros_Ingresos/Reimpresion_Comprobante_Pago/tcpdf/
+/Otros_Ingresos/Reproduccion_Pago/tcpdf/
+/Otros_Ingresos/Validacion_Datos_Importados/Pdf_Comunicacion/font/
+/Otros_Ingresos/Validacion_Datos_Importados/Pdf_Comunicacion/makefont/
+/Otros_Ingresos/Validacion_Datos_Importados/Pdf_Comunicacion_Interna/doc/
+/Otros_Ingresos/Validacion_Datos_Importados/Pdf_Comunicacion_Interna/font/
+/Otros_Ingresos/Validacion_Datos_Importados/Pdf_Comunicacion_Interna/makefont/
+/Otros_Ingresos/Administracion_Usuarios/Pdf/font/makefont/
+/Otros_Ingresos/Administracion_Usuarios/Pdf/font/
+
+*.pdf
+/*.pdf
+
+# End of https://www.toptal.com/developers/gitignore/api/phpunit

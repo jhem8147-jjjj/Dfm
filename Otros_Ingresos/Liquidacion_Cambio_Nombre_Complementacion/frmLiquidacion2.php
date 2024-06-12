@@ -1,17 +1,10 @@
-﻿<?php  require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php';
+﻿<?php  
+require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
+require_once('../Control_Sesiones_Forms/Loading.php'); 
+require '../Conexion_BD/Dbms.php';
 $_SESSION['COM_INT']=$COM_INT;
-$_SESSION['CODIGOREGISTRO']=$CODIGOREGISTRO;
-// obtiene costos de cambio de nombre
-$rest=mysql_query("select * from cambio_nombre where ESTADO='ACTIVO'");while($rowt=mysql_fetch_array($rest)){
-$COSTOCAMBIONOMBRE=$rowt['MONTO'];
-$COSTOCAMBIONOMBREFORMULARIO=$rowt['FORMULARIO'];
-}
+$_SESSION['CODIGOREGISTRO']=$CODIGOREGISTRO; 
 	
-// obtiene costos de complemento
-$rest=mysql_query("select * from complemento where ESTADO='ACTIVO'");while($rowt=mysql_fetch_array($rest)){
-$COSTOCOMPLEMENTO=$rowt['MONTO'];
-$COSTOCOMPLEMENTOFORMULARIO=$rowt['FORMULARIO'];
-	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -48,13 +41,27 @@ $COSTOCOMPLEMENTOFORMULARIO=$rowt['FORMULARIO'];
       <tr>
         <td align="right" bgcolor="#CCCCCC">Zona Tributaria :</td>
         <td style="font-weight: bold; font-size: 14px;"><span style="font-weight: bold">
-          <?php  $sql = "select ZT.DESCRIPCION,ZT.CODIGO_ZONA, monto, monto_nombre
+          <?php  $sql = "select ZT.DESCRIPCION,ZT.CODIGO_ZONA, monto,  RAZT.CODIGO_ZONA as CODIGO_ZONA__
                           from zona_tributaria ZT,reg_asociacion_zona_tributaria RAZT 
                           where RAZT.CODIGO_ASOCIACION='$COD_ASOCIACION' 
                           and RAZT.CODIGO_ZONA=ZT.CODIGO_ZONA 
                           and RAZT.ESTADO='ACTIVO' and ZT.ESTADO='ACTIVO'"; 
-                          $liqui=mysql_query($sql);while($rowt=mysql_fetch_array($liqui)){ echo $rowt[0];  $CODIGO_ZONA_TRIB=$rowt[1]; $monto_nombre=$rowt[3];} 
+                          $liqui=mysql_query($sql);while($rowt=mysql_fetch_array($liqui)){ echo $rowt[0];  $CODIGO_ZONA_TRIB=$rowt[1]; $CODIGO_ZONA__=$rowt[3]; } 
                           //echo $sql;
+
+                // obtiene costos de cambio de nombre
+                $sql_ = "select * from cambio_nombre where ESTADO='ACTIVO' and CODIGO_ZONA_ like '$CODIGO_ZONA__' ";
+                $rest=mysql_query($sql_);
+                while($rowt=mysql_fetch_array($rest)){
+                  $COSTOCAMBIONOMBRE=$rowt['MONTO'];
+                  $COSTOCAMBIONOMBREFORMULARIO=$rowt['FORMULARIO'];
+                  }
+                // obtiene costos de complemento
+                $rest=mysql_query("select * from complemento where ESTADO='ACTIVO' and CODIGO_ZONA_ like '$CODIGO_ZONA__'");while($rowt=mysql_fetch_array($rest)){
+                  $COSTOCOMPLEMENTO=$rowt['MONTO'];
+                  $COSTOCOMPLEMENTOFORMULARIO=$rowt['FORMULARIO'];
+                }
+
           ?>
         </span></td>
       </tr>
@@ -88,7 +95,7 @@ $COSTOCOMPLEMENTOFORMULARIO=$rowt['FORMULARIO'];
           <input name="txtBancoCn" type="text" id="txtBancoCn" value="BANCO UNION S.A." /></td>
       </tr>
       <tr>
-        <td width="8%" align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Monto a Pagar Individual :</td>
+        <td width="8%" align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Monto a Pagar Individual :<?php echo $COSTOCAMBIONOMBRE;?></td>
         <td width="92%"><input name="txtMontoCn" type="text" id="txtMontoCn" value="<?php echo $COSTOCAMBIONOMBRE;?>"  required />
           <input name="CN" type="hidden" id="CN" value="1" /></td>
       </tr>
@@ -103,7 +110,7 @@ $COSTOCOMPLEMENTOFORMULARIO=$rowt['FORMULARIO'];
       </tr>
       <tr>
         <td align="right" valign="top"><img src="../Img/Linea.png" width="250" height="4" /></td>
-        <td><input type="submit" name="button" id="button" value="Registrar Datos" style="width:250px; height:35px" onclick="this.disabled=true;"/></td>
+        <td><input type="submit" name="button" id="button" value="Registrar Datos" style="width:250px; height:35px" /></td>
       </tr>
       <tr>
         <td align="right" valign="top">&nbsp;</td>
@@ -143,7 +150,7 @@ $COSTOCOMPLEMENTOFORMULARIO=$rowt['FORMULARIO'];
       </tr>
       <tr>
         <td align="right" valign="top"><img src="../Img/Linea.png" width="250" height="4" /></td>
-        <td><input type="submit" name="button2" id="button2" value="Registrar Datos" style="width:250px; height:35px" onclick="this.disabled=true;"/></td>
+        <td><input type="submit" name="button2" id="button2" value="Registrar Datos"  style="width:250px; height:35px"/></td>
       </tr>
       <tr>
         <td align="right" valign="top">&nbsp;</td>
