@@ -183,13 +183,13 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel='StyleSheet' href='../Css_Formularios/frmProcesos.css' type="text/css">
   <script language="javascript">
-    function activar1() {
+   /*  function activar1() {
       document.getElement.ById('original').disabled = false;
     }
 
     function activar2() {
       document.getElement.ById('copia').disabled = false;
-    }
+    } */
   </script>
   <style type="text/css">
   </style>
@@ -230,8 +230,9 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
             <td bgcolor="#E3F0F2">2</td>
             <td bgcolor="#E3F0F2">Imprimir Comprobante Original, genera archivo pdf los pagos de comprobante de la gestión seleccionada .</td>
             <td>
-              <form method="post" action='tcpdf/Comprobantes_Pago/frmOriginalComprobante.php' target="_new"><input type="submit" name="original" id="original" value="Imprimir Comprobante Original" style="width:200px; height:35px" />
+              <form method="post" action='tcpdf/Comprobantes_Pago/frmOriginalComprobante.php' target="_new">
                 <input name="txtCodRegistro" type="hidden" id="txtCodRegistro" value="<?php echo $COD_REGISTRO; ?>" />
+                <input type="submit" name="original" id="original" value="Imprimir Comprobante Original" style="width:200px; height:35px" />
               </form>
             </td>
           </tr>
@@ -239,8 +240,9 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
             <td bgcolor="#E3F0F2">3</td>
             <td bgcolor="#E3F0F2">Imprimir Comprobante Copia, genera archivo pdf los pagos de comprobante de la gestión seleccionada .</td>
             <td>
-              <form method="post" action='tcpdf/Comprobantes_Pago/frmCopiaComprobante.php' target="_new"><input type="submit" name="copia" value="Imprimir Comprobante Copia" style="width:200px; height:35px" id="copia" />
+              <form method="post" action='tcpdf/Comprobantes_Pago/frmCopiaComprobante.php' target="_new">
                 <input name="txtCodRegistroCopia" type="hidden" id="txtCodRegistroCopia" value="<?php echo $COD_REGISTRO; ?>" />
+                <input type="submit" name="copia" value="Imprimir Comprobante Copia" style="width:200px; height:35px" id="copia" />
               </form>
             </td>
           </tr>

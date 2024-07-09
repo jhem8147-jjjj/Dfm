@@ -155,7 +155,7 @@ $_SESSION['CODIGOREGISTRO']=$CODIGOREGISTRO;
   </tr>
   <tr>
     <td align="center"><span class="comentario">
-      <input type="submit" name="button" id="button" value="Aceptar" style="width:250px; height:35px" disabled="disabled" //>
+      <input type="submit" name="button" id="button" value="Aceptar" style="width:250px; height:35px" />
     </span></td>
   </tr>
   <tr>
