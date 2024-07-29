@@ -230,8 +230,8 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
             <td bgcolor="#E3F0F2">2</td>
             <td bgcolor="#E3F0F2">Imprimir Comprobante Original, genera archivo pdf los pagos de comprobante de la gestión seleccionada .</td>
             <td>
-              <form method="post" action='tcpdf/Comprobantes_Pago/frmOriginalComprobante.php' target="_new">
-                <input name="txtCodRegistro" type="hidden" id="txtCodRegistro" value="<?php echo $COD_REGISTRO; ?>" />
+              <form method="post" action='tcpdf/Comprobantes_Pago/frmOriginalComprobante.php?COD_ASOCIACION=<?php echo $COD_ASOCIACION;?>&CODIGO_REGISTRO=<?php echo $COD_REGISTRO; ?>' target="_blank">  
+              <input name="txtCodRegistro" type="hidden" id="txtCodRegistro" value="<?php echo $COD_REGISTRO; ?>" />
                 <input type="submit" name="original" id="original" value="Imprimir Comprobante Original" style="width:200px; height:35px" />
               </form>
             </td>
@@ -240,9 +240,8 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
             <td bgcolor="#E3F0F2">3</td>
             <td bgcolor="#E3F0F2">Imprimir Comprobante Copia, genera archivo pdf los pagos de comprobante de la gestión seleccionada .</td>
             <td>
-              <form method="post" action='tcpdf/Comprobantes_Pago/frmCopiaComprobante.php' target="_new">
+              <form method="post" action='tcpdf/Comprobantes_Pago/frmCopiaComprobante.php' target="_new"><input type="submit" name="copia" value="Imprimir Comprobante Copia" style="width:200px; height:35px" id="copia" />
                 <input name="txtCodRegistroCopia" type="hidden" id="txtCodRegistroCopia" value="<?php echo $COD_REGISTRO; ?>" />
-                <input type="submit" name="copia" value="Imprimir Comprobante Copia" style="width:200px; height:35px" id="copia" />
               </form>
             </td>
           </tr>
@@ -267,7 +266,7 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
       </td>
     </tr>
   </table>
-
+  tcpdf/Comprobantes_Pago/frmOriginalComprobante.php?COD_ASOCIACION=<?php echo $COD_ASOCIACION;?>&CODIGO_REGISTRO=<?php echo $COD_REGISTRO; ?>
 </body>
 
 </html><?php require '../Conexion_BD/Cerrar_Dbms.php'; ?>
