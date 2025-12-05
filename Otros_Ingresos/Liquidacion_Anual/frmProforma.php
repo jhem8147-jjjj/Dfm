@@ -40,7 +40,11 @@ $SWU=0;$FECHA_UFV=date('Y-m-d');$result=mysql_query("select * from historial_ufv
           </tr>
       </thead>
       <tbody>
-        <?php $result=mysql_query("select ASOC.ORDENANZA_MUNICIPAL,ASOC.DESCRIPCION,ASOC.ARCHIVO,ASOC.AFILIADOS,ZT.DESCRIPCION,ASOC.CODIGO_ASOCIACION,ASOC.ZONA_UBICACION from reg_asociacion ASOC, zona_tributaria ZT, reg_asociacion_zona_tributaria ASOCZT where ASOC.ESTADO='ACTIVO' and ZT.ESTADO='ACTIVO' and ASOCZT.ESTADO='ACTIVO' and ASOCZT.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION  and ASOCZT.CODIGO_ZONA=ZT.CODIGO_ZONA order by ASOC.DESCRIPCION"); while($row=mysql_fetch_array($result)){ ?>
+        <?php $result=mysql_query("
+        select ASOC.ORDENANZA_MUNICIPAL,ASOC.DESCRIPCION,ASOC.ARCHIVO,ASOC.AFILIADOS,ZT.DESCRIPCION,ASOC.CODIGO_ASOCIACION,ASOC.ZONA_UBICACION 
+        from reg_asociacion ASOC, zona_tributaria ZT, reg_asociacion_zona_tributaria ASOCZT where ASOC.ESTADO='ACTIVO' and ZT.ESTADO='ACTIVO' 
+        and ASOCZT.ESTADO='ACTIVO' and ASOCZT.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION  
+        and ASOCZT.CODIGO_ZONA=ZT.CODIGO_ZONA order by ASOC.DESCRIPCION"); while($row=mysql_fetch_array($result)){ ?>
         <tr>
           <td><?php $CONT++; echo $CONT; ?></td>
           <td><?php echo $row[0]; ?></td>

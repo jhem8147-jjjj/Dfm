@@ -27,7 +27,7 @@ if (empty($_SESSION['CODIGOREGISTRO'])) {
   <link rel='StyleSheet' href='../Css_Formularios/frmProcesos.css' type="text/css">
   <script src='Js/frmValida.js' type="text/javascript"></script>
 </head>
-<form method="post" action="frmEmisionCP3.php">
+<form method="post" action="frmEmisionCP3.php?CODIGOREGISTRO=<?php echo $_GET['CODIGOREGISTRO'];?>">
 
   <body>
     <table width="10%" border="0" align="left">
@@ -130,7 +130,7 @@ if (empty($_SESSION['CODIGOREGISTRO'])) {
             <tr>
               <td align="right" valign="top"><img src="../Img/Linea.png" width="250" height="4" /></td>
               <td>
-                <input type="hidden" value="<?php $CODIGOREGISTRO;?>" name="COD_REGISTRO" id="COD_REGISTRO">
+                <input type="hidden" value="<?php echo $_GET['CODIGOREGISTRO'];?>" name="CODIGOREGISTRO" id="CODIGOREGISTRO">
                 <input type="submit" name="button" id="button" value="Registrar Datos" style="width:250px; height:35px" />
               </td>
             </tr>

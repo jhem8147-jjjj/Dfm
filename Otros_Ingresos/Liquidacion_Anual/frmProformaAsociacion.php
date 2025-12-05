@@ -106,7 +106,9 @@ $cont=0;
       <?php 
 	  
 		   //liquida la gestion seleccionada
-	  $res=mysql_query("select CONTRI.DOC_IDENTIDAD,CONTRI.DOC_IDENTIDAD_ALFA,CONTRI.EXPEDIDO,CONTRI.NOMBRE_RSOCIAL,CONTRI.PRIMER_APELLIDO,CONTRI.SEGUNDO_APELLIDO,CONTRI.APELLIDO_ESPOSO,RCHP.GESTION,RCHP.TIPO_VENTA,RCHP.FILA,RCHP.PUESTO,RCHP.MONTO,RCHP.MANT_VALOR,RCHP.MIDF,RCHP.INTERES,RCHP.OTRAS_MULTAS,RCHP.FORMULARIO,RCHP.COMUNICACION_INTERNA from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CODIGO_REGISTRO='$CODIGOREGISTRO' and CONTRI.CODIGO_CONTRIBUYENTE=RCHP.CODIGO_CONTRIBUYENTE and CONTRI.ESTADO='ACTIVO' and RCHP.ESTADO='ACTIVO' and RCHP.ESTADO_PAGO='NO PAGO'");
+	  $res=mysql_query("select CONTRI.DOC_IDENTIDAD,CONTRI.DOC_IDENTIDAD_ALFA,CONTRI.EXPEDIDO,CONTRI.NOMBRE_RSOCIAL,CONTRI.PRIMER_APELLIDO,
+    CONTRI.SEGUNDO_APELLIDO,CONTRI.APELLIDO_ESPOSO,RCHP.GESTION,RCHP.TIPO_VENTA,
+    RCHP.FILA,RCHP.PUESTO,RCHP.MONTO,RCHP.MANT_VALOR,RCHP.MIDF,RCHP.INTERES,RCHP.OTRAS_MULTAS,RCHP.FORMULARIO,RCHP.COMUNICACION_INTERNA from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CODIGO_REGISTRO='$CODIGOREGISTRO' and CONTRI.CODIGO_CONTRIBUYENTE=RCHP.CODIGO_CONTRIBUYENTE and CONTRI.ESTADO='ACTIVO' and RCHP.ESTADO='ACTIVO' and RCHP.ESTADO_PAGO='NO PAGO'");
 	  while($row=mysql_fetch_array($res)){ 			  
 			  
 	  $SW2=1;?>
@@ -115,8 +117,8 @@ $cont=0;
         <td><?php if($row[1]== null){ echo  $row[0].' '.$row[2];}else{echo $row[0].' - '.$row[1].' '.$row[2];} ?></td>
         <td><?php if($row[6]== null){echo $row[3].' '.$row[4].' '.$row[5].' '.$row[6];}else{echo $row[3].' '.$row[4].' '.$row[5].' de '.$row[6];} ?></td>
         <td><?php echo $row[8]; ?></td>
-        <td><?php echo $row[9]; ?></td>
-        <td><?php echo $row[10]; ?></td>
+        <td><?php echo $row['PUESTO']; ?></td>
+        <td><?php echo $row['FILA']; ?></td>
         <td align="center"><?php echo $row[11]; ?></td>
         <td align="center"><?php echo $row[12]; ?></td>
         <td align="center"><?php echo $row[13]; ?></td>

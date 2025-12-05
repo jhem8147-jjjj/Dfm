@@ -156,12 +156,12 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
     $query = mysql_query("UPDATE nro_comprobantes SET COMPROBANTE='$CONTADOR'") or die("NO SE PUDO ACTUALIZAR CONTADORES");
 
     //REGISTRA EN LA TABLA PAGO ASOCIACION
-    $sql2 = "insert into reg_contribuyente_asociacion_pago(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,NRO_COMPROBANTE,CODIGO_CONTRIBUYENTE,CODIGO_ASOCIACION,CODIGO_ZONA,FECHA_IMPRESION,CEDULA_IDENTIDAD,CONTRIBUYENTE,ASOCIACION,DIRECCION,ZONA_UBICACION,ACTIVIDAD,CODIGO_CUENTA1,DESCRIPCION_1,GLOSA_DESCRIPCION_1,GLOSA_DESCRIPCION_2,TOTAL1,CODIGO_CUENTA2,DESCRIPCION_2,DESCRIPCION_2_1,TOTAL2,CODIGO_CUENTA3,DESCRIPCION_3,TOTAL3,LITERAL,TOTAL,TRANSCRIPTOR,OBSERVACIONES,CAJERO,VERIFICADOR,PAGO_REALIZADO,COMUNICACION_INTERNA)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$rows[8]','$CONTADOR','$rows[9]','$COD_ASOCIACION','$rows[11]','$FECHA','$CEDULA_IDENTIDAD','$NOMBRE_CONT','$ASOCIACION','$DIRECCIONPUESTO','$ZONAPUESTO','$rows[12] $rows[13] - $rows[14]','9.02','PATENTE EVENTUAL EN DOMINIO PUBLICO','PAGO CORRESPONDIENTE DE ENERO A DICIEMBRE DE LA GESTION: $sltGestion.','SEGUN LEY 291 DE FECHA 28/08/2015 DECRETO MUNICIPAL 46/2015.','$rows[15]','$CODIGO_MULTA','$DESC_MULTA','$GLOSA_MULTA','$MONTO_MULTA','11.01','Formulario','$rows[20]','$LITERAL','$TOTAL','D.F.M.','PAGO AUTORIZADO MEDIANTE DOCUMENTO $txtComunicacion, AUTORIZADO POR $txtAutorizado CON CARGO $txtCargo, DEPOSITO BANCARIO $txtDeposito, DE FECHA DEPOSITO $txtFecha.','BANCO UNION','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','DEPOSITO BANCARIO $txtDeposito, REALIZADO EN BANCO UNION A LA CUENTA $txtNroCuenta.','$txtComunicacion')";
-    $result = mysql_query($sql2) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_asociacion_pago.");
+    $sql2 = "insert into reg_contribuyente_asociacion_pago(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,NRO_COMPROBANTE,CODIGO_CONTRIBUYENTE,CODIGO_ASOCIACION,CODIGO_ZONA,FECHA_IMPRESION,CEDULA_IDENTIDAD,CONTRIBUYENTE,ASOCIACION,DIRECCION,ZONA_UBICACION,ACTIVIDAD,CODIGO_CUENTA1,DESCRIPCION_1,GLOSA_DESCRIPCION_1,GLOSA_DESCRIPCION_2,TOTAL1,CODIGO_CUENTA2,DESCRIPCION_2,DESCRIPCION_2_1,TOTAL2,CODIGO_CUENTA3,DESCRIPCION_3,TOTAL3,LITERAL,TOTAL,TRANSCRIPTOR,OBSERVACIONES,CAJERO,VERIFICADOR,PAGO_REALIZADO,COMUNICACION_INTERNA)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$rows[8]','$CONTADOR','$rows[9]','$COD_ASOCIACION','$rows[11]','$FECHA','$CEDULA_IDENTIDAD','$NOMBRE_CONT','$ASOCIACION','$DIRECCIONPUESTO','$ZONAPUESTO','$rows[12] $rows[13] - $rows[14]','9.02','PATENTE EVENTUAL EN DOMINIO PUBLICO','PAGO CORRESPONDIENTE DE ENERO A DICIEMBRE DE LA GESTION: $sltGestion.','SEGUN LEY 291/2015 - LEY 827/2023, DECRETO MUNICIPAL 192/2023.','$rows[15]','$CODIGO_MULTA','$DESC_MULTA','$GLOSA_MULTA','$MONTO_MULTA','11.01','Formulario','$rows[20]','$LITERAL','$TOTAL','D.F.M.','PAGO AUTORIZADO MEDIANTE DOCUMENTO $txtComunicacion, AUTORIZADO POR $txtAutorizado CON CARGO $txtCargo, DEPOSITO BANCARIO $txtDeposito, DE FECHA DEPOSITO $txtFecha.','BANCO UNION','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','DEPOSITO BANCARIO $txtDeposito, REALIZADO EN BANCO UNION A LA CUENTA $txtNroCuenta.','$txtComunicacion')";
+    $result = mysql_query($sql2) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_asociacion_pago.".$sql2);
 
     //REGISTRA EN LA TABLA PAGO reg_contribuyente_asociacion_datos_comprobantes
-    $sql2 = "insert into reg_contribuyente_asociacion_datos_comprobantes(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,NRO_COMPROBANTE,CODIGO_CONTRIBUYENTE,CODIGO_ASOCIACION,CODIGO_ZONA,FECHA_IMPRESION,CEDULA_IDENTIDAD,CONTRIBUYENTE,ASOCIACION,DIRECCION,ZONA_UBICACION,ACTIVIDAD,CODIGO_CUENTA1,DESCRIPCION_1,GLOSA_DESCRIPCION_1,GLOSA_DESCRIPCION_2,TOTAL1,CODIGO_CUENTA2,DESCRIPCION_2,DESCRIPCION_2_1,TOTAL2,CODIGO_CUENTA3,DESCRIPCION_3,TOTAL3,LITERAL,TOTAL,TRANSCRIPTOR,OBSERVACIONES,CAJERO,VERIFICADOR,PAGO_REALIZADO,COMUNICACION_INTERNA)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$rows[8]','$CONTADOR','$rows[9]','$COD_ASOCIACION','$rows[11]','$FECHA','$CEDULA_IDENTIDAD','$NOMBRE_CONT','$ASOCIACION','$DIRECCIONPUESTO','$ZONAPUESTO','$rows[12] $rows[13] - $rows[14]','9.02','PATENTE EVENTUAL EN DOMINIO PUBLICO','PAGO CORRESPONDIENTE DE ENERO A DICIEMBRE DE LA GESTION: $sltGestion.','SEGUN LEY 291 DE FECHA 28/08/2015 DECRETO MUNICIPAL 46/2015.','$rows[15]','$CODIGO_MULTA','$DESC_MULTA','$GLOSA_MULTA','$MONTO_MULTA','11.01','Formulario','$rows[20]','$LITERAL','$TOTAL','D.F.M.','PAGO AUTORIZADO MEDIANTE DOCUMENTO $txtComunicacion, AUTORIZADO POR $txtAutorizado CON CARGO $txtCargo, DEPOSITO BANCARIO $txtDeposito, DE FECHA DEPOSITO $txtFecha.','BANCO UNION','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','DEPOSITO BANCARIO $txtDeposito, REALIZADO EN BANCO UNION A LA CUENTA $txtNroCuenta.','$txtComunicacion')";
-    $result = mysql_query($sql2) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_asociacion_pago.");
+    $sql2 = "insert into reg_contribuyente_asociacion_datos_comprobantes(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,NRO_COMPROBANTE,CODIGO_CONTRIBUYENTE,CODIGO_ASOCIACION,CODIGO_ZONA,FECHA_IMPRESION,CEDULA_IDENTIDAD,CONTRIBUYENTE,ASOCIACION,DIRECCION,ZONA_UBICACION,ACTIVIDAD,CODIGO_CUENTA1,DESCRIPCION_1,GLOSA_DESCRIPCION_1,GLOSA_DESCRIPCION_2,TOTAL1,CODIGO_CUENTA2,DESCRIPCION_2,DESCRIPCION_2_1,TOTAL2,CODIGO_CUENTA3,DESCRIPCION_3,TOTAL3,LITERAL,TOTAL,TRANSCRIPTOR,OBSERVACIONES,CAJERO,VERIFICADOR,PAGO_REALIZADO,COMUNICACION_INTERNA)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$rows[8]','$CONTADOR','$rows[9]','$COD_ASOCIACION','$rows[11]','$FECHA','$CEDULA_IDENTIDAD','$NOMBRE_CONT','$ASOCIACION','$DIRECCIONPUESTO','$ZONAPUESTO','$rows[12] $rows[13] - $rows[14]','9.02','PATENTE EVENTUAL EN DOMINIO PUBLICO','PAGO CORRESPONDIENTE DE ENERO A DICIEMBRE DE LA GESTION: $sltGestion.','SEGUN LEY 291/2015 - LEY 827/2023, DECRETO MUNICIPAL 192/2023.','$rows[15]','$CODIGO_MULTA','$DESC_MULTA','$GLOSA_MULTA','$MONTO_MULTA','11.01','Formulario','$rows[20]','$LITERAL','$TOTAL','D.F.M.','PAGO AUTORIZADO MEDIANTE DOCUMENTO $txtComunicacion, AUTORIZADO POR $txtAutorizado CON CARGO $txtCargo, DEPOSITO BANCARIO $txtDeposito, DE FECHA DEPOSITO $txtFecha.','BANCO UNION','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','DEPOSITO BANCARIO $txtDeposito, REALIZADO EN BANCO UNION A LA CUENTA $txtNroCuenta.','$txtComunicacion')";
+    $result = mysql_query($sql2) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_asociacion_datos_comprobantes.".$sql2);
 
     //Actualiza el estado de os pagos	
     $query = mysql_query("UPDATE reg_contribuyente_habilitado_pago SET ESTADO_PAGO='PAGADO CON DEPOSITO BANCARIO $txtDeposito, EN FECHA $txtFecha.' , ESTADO='PAGADO' where  Id='$rows[7]' and CODIGO_REGISTRO='$CODIGOREGISTRO' and REGISTRO_GREMIAL='$rows[8]' and CODIGO_CONTRIBUYENTE='$rows[9]' and GESTION='$sltGestion' and CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO'") or die("NO SE PUDO ACTUALIZAR reg_contribuyente_habilitado_pago");
@@ -183,7 +183,7 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link rel='StyleSheet' href='../Css_Formularios/frmProcesos.css' type="text/css">
   <script language="javascript">
-   /*  function activar1() {
+    /*  function activar1() {
       document.getElement.ById('original').disabled = false;
     }
 
@@ -193,7 +193,8 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
   </script>
   <style type="text/css">
   </style>
-</head> 
+</head>
+
 <body>
   <table width="50%" border="0">
     <tr>
@@ -220,18 +221,22 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
             <td bgcolor="#E3F0F2">1</td>
             <td bgcolor="#E3F0F2">Grabar, permite registrar el pago realizado por la asociacion.</td>
             <td>
-              <form method="post" action='frmOpciones.php'>
+            <?php if ($_SESSION['auxContadorGrabar'] < 1) {
+
+              echo '<form method="post" action="frmOpciones.php">
                 <input name="txtReg" type="hidden" id="txtReg" value="1" />
                 <input type="submit" name="button" id="button" value="Grabar" style="width:200px; height:35px" />
-              </form>
+              </form>';
+              $_SESSION['auxContadorGrabar']++;}
+              ?>
             </td>
           </tr>
           <tr>
             <td bgcolor="#E3F0F2">2</td>
             <td bgcolor="#E3F0F2">Imprimir Comprobante Original, genera archivo pdf los pagos de comprobante de la gestión seleccionada .</td>
             <td>
-              <form method="post" action='tcpdf/Comprobantes_Pago/frmOriginalComprobante.php?COD_ASOCIACION=<?php echo $COD_ASOCIACION;?>&CODIGO_REGISTRO=<?php echo $COD_REGISTRO; ?>' target="_blank">  
-              <input name="txtCodRegistro" type="hidden" id="txtCodRegistro" value="<?php echo $COD_REGISTRO; ?>" />
+              <form method="post" action='tcpdf/Comprobantes_Pago/frmOriginalComprobante.php?COD_ASOCIACION=<?php echo $COD_ASOCIACION; ?>&CODIGO_REGISTRO=<?php echo $COD_REGISTRO; ?>' target="_blank">
+                <input name="txtCodRegistro" type="hidden" id="txtCodRegistro" value="<?php echo $COD_REGISTRO; ?>" />
                 <input type="submit" name="original" id="original" value="Imprimir Comprobante Original" style="width:200px; height:35px" />
               </form>
             </td>
@@ -266,7 +271,7 @@ from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CO
       </td>
     </tr>
   </table>
-  tcpdf/Comprobantes_Pago/frmOriginalComprobante.php?COD_ASOCIACION=<?php echo $COD_ASOCIACION;?>&CODIGO_REGISTRO=<?php echo $COD_REGISTRO; ?>
+  tcpdf/Comprobantes_Pago/frmOriginalComprobante.php?COD_ASOCIACION=<?php echo $COD_ASOCIACION; ?>&CODIGO_REGISTRO=<?php echo $COD_REGISTRO; ?>
 </body>
 
 </html><?php require '../Conexion_BD/Cerrar_Dbms.php'; ?>

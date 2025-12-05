@@ -49,7 +49,9 @@ require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/D
           </tr>
       </thead>
       <tbody>
-        <?php $result=mysql_query("select * from reg_contribuyente_asociacion_pago where NRO_COMPROBANTE BETWEEN $txtCinicial AND $txtCfinal"); while($row=mysql_fetch_array($result)){ ?>
+        <?php
+        //echo "select * from reg_contribuyente_asociacion_pago where estado = 'ACTIVO'and  NRO_COMPROBANTE BETWEEN $txtCinicial AND $txtCfinal ";
+        $result=mysql_query("select * from reg_contribuyente_asociacion_pago where estado = 'ACTIVO' and NRO_COMPROBANTE BETWEEN $txtCinicial AND $txtCfinal "); while($row=mysql_fetch_array($result)){ ?>
         <tr>
           <td><?php $CONT++; echo $CONT; ?></td>
           <td><?php echo $row['FECHA'].' Hrs. '.$row['HORA']; ?></td>

@@ -36,6 +36,9 @@ $_SESSION['CODIGOREGISTRO']=$CODIGOREGISTRO;
         
 }</script>
 </head>
+<?php
+$_SESSION['auxContadorGrabar'] = 0;
+?>
 <form  method="post" action='frmOpciones.php'>
 <body>
 <table width="50%" border="0">

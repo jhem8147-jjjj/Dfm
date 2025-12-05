@@ -1,6 +1,6 @@
 <?php
-ob_start();
-session_start(); 
+session_start();
+//ob_start();
 if(empty($_SESSION['US_SIOI'])){include_once("Index.php");}else{$_SESSION['US_SIOI']=$US_SIOI;}
 if(empty($_SESSION['SIAUNOMBRES'])){include_once("Index.php");}else{$_SESSION['SIAUNOMBRES']=$SIAUNOMBRES;}
 if(empty($_SESSION['USPRIMERAPELLIDO'])){include_once("Index.php");}else{$_SESSION['USPRIMERAPELLIDO']=$USPRIMERAPELLIDO;}
