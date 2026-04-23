@@ -24,7 +24,9 @@
 /Otros_Ingresos/Documentos_Descargas/
 /Otros_Ingresos/Emision_Comprobante_Pago_Anual/tcpdf/
 /Otros_Ingresos/Emision_Comprobante_pago_CN_CC/tcpdf/
-/Otros_Ingresos/Importar_Excel_Dfm/
+/Otros_Ingresos/Importar_Excel_Dfm/*.xls
+/Otros_Ingresos/Importar_Excel_Dfm/*.xlsx
+/Otros_Ingresos/Importar_Excel_Dfm/Classes
 /Otros_Ingresos/Pdf_Fpdf/
 /Otros_Ingresos/Reimpresion_Comprobante_Pago/tcpdf/
 /Otros_Ingresos/Reproduccion_Pago/tcpdf/
