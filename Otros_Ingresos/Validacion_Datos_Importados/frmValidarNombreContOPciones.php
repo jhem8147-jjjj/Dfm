@@ -1,9 +1,15 @@
 <?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
-require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php'; require_once '../Conexion_BD/request.php';
-$COD_ASOCIACION = appRequestValue('COD_ASOCIACION');
-$ASOCIACION = appRequestValue('ASOCIACION');
-$ORDENANZA_MUNICIPAL = appRequestValue('ORDENANZA_MUNICIPAL');
-$sltGestion = appRequestValue('sltGestion');
+require '../Conexion_BD/Dbms.php';
+function validacionOpcionesValue($name)
+{
+	return isset($_POST[$name]) && is_scalar($_POST[$name])
+		? (string) $_POST[$name]
+		: '';
+}
+$COD_ASOCIACION = validacionOpcionesValue('COD_ASOCIACION');
+$ASOCIACION = validacionOpcionesValue('ASOCIACION');
+$ORDENANZA_MUNICIPAL = validacionOpcionesValue('ORDENANZA_MUNICIPAL');
+$sltGestion = validacionOpcionesValue('sltGestion');
 if ($COD_ASOCIACION === '' || $sltGestion === '') {
 	echo "<script>alert('Seleccione una asociación y una gestión para continuar.'); location.href='frmValidarNombresCont.php';</script>";
 	exit;
@@ -88,7 +94,7 @@ $sltGestion_SQL = mysql_real_escape_string($sltGestion);
           <td bgcolor="#F4F4F4"><?php if($row[6]=='ACTIVO'){echo 'NO PAGADO';}else{echo htmlspecialchars($row[6], ENT_QUOTES, 'UTF-8');} ?></td>
           <td bgcolor="#F4F4F4"><?php  $codigoRegistroSql = mysql_real_escape_string($row[0]); $estadoRegistroSql = mysql_real_escape_string($row[7]); $results=mysql_query("select count(CODIGO_REGISTRO) from reg_contribuyente_habilitado_pago where CODIGO_REGISTRO='$codigoRegistroSql' AND ESTADO='ACTIVO' AND  CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' and GESTION='$sltGestion_SQL' and ESTADO_REGISTRO='$estadoRegistroSql'"); while($rowts=mysql_fetch_array($results)){ echo '( '.$rowts[0].' ) ';} echo htmlspecialchars($row[7], ENT_QUOTES, 'UTF-8'); ?></td>
           <td bgcolor="#F4F4F4"><?php if ($row[8] !== '' && preg_match('/^[0-9]{4}\/[A-Za-z0-9_-]+$/', $row[9])) { $rutaDocumento = dirname(__FILE__) . '/Pdf_Comunicacion_Interna/generated/' . $row[9]; $extensionDocumento = is_file($rutaDocumento . '.docx') ? 'docx' : (is_file($rutaDocumento . '.pdf') ? 'pdf' : ''); if ($extensionDocumento !== '') { ?><a href="Pdf_Comunicacion_Interna/generated/<?php echo htmlspecialchars($row[9], ENT_QUOTES, 'UTF-8'); ?>.<?php echo $extensionDocumento; ?>" target="_blank"><?php echo htmlspecialchars($row[8], ENT_QUOTES, 'UTF-8'); ?></a><?php } else { echo htmlspecialchars($row[8], ENT_QUOTES, 'UTF-8'); } } else { echo htmlspecialchars($row[8], ENT_QUOTES, 'UTF-8'); } ?></td>
-          <td align="center" style="font-weight: bold"><a href="frmValidarNombresCont2.php?sltGestion=<?php echo urlencode($row[1]); ?>&amp;CODIGO_REGISTRO=<?php echo urlencode($row[0]); ?>" ><?php if($row[7]=='NO VALIDADO'){?>VALIDAR REGISTROS<?php }else{echo 'MOSTRAR LISTADO';}?></a></td>
+          <td align="center" style="font-weight: bold"><a href="frmValidarNombresCont2.php?sltGestion=<?php echo urlencode($row[1]); ?>&amp;CODIGO_REGISTRO=<?php echo urlencode($row[0]); ?>&amp;COD_ASOCIACION=<?php echo urlencode($COD_ASOCIACION); ?>" ><?php if($row[7]=='NO VALIDADO'){?>VALIDAR REGISTROS<?php }else{echo 'MOSTRAR LISTADO';}?></a></td>
         </tr>
         <?php } ?>
       </tbody>

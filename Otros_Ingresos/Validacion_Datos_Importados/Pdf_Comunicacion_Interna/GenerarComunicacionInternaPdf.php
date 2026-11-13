@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(dirname(__FILE__)) . '/Complemento_Contribuyentes/Pdf_Complementos/WordComplemento.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/Complemento_Contribuyentes/Pdf_Complementos/WordComplemento.php');
 
 $COMUNICACION_INTERNA = 'DFM/AC/AP/00'.$CODIGO_NRO.'/'.$GESTION;
 $wordRelativePath = $GESTION.'/'.$NOMBRE;

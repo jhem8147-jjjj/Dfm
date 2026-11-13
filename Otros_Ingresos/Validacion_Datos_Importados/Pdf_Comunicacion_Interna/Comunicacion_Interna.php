@@ -1,7 +1,13 @@
-<?php  require_once('../../Control_Sesiones_Forms/frmControlSesionUsuario.php');require '../../Conexion_BD/Dbms.php'; require_once '../../Conexion_BD/request.php';
-$COD_ASOCIACION = appRequestValue('COD_ASOCIACION');
-$CODIGO_REGISTRO = appRequestValue('CODIGO_REGISTRO');
-$sltGestion = appRequestValue('sltGestion');
+<?php  require_once('../../Control_Sesiones_Forms/frmControlSesionUsuario.php');require '../../Conexion_BD/Dbms.php';
+function comunicacionRequestValue($name)
+{
+	return isset($_POST[$name]) && is_scalar($_POST[$name])
+		? (string) $_POST[$name]
+		: '';
+}
+$COD_ASOCIACION = comunicacionRequestValue('COD_ASOCIACION');
+$CODIGO_REGISTRO = comunicacionRequestValue('CODIGO_REGISTRO');
+$sltGestion = comunicacionRequestValue('sltGestion');
 if ($COD_ASOCIACION === '' || $CODIGO_REGISTRO === '' || $sltGestion === '') {
 	die('No se puede generar la comunicación interna: faltan datos de asociación, registro o gestión.');
 }

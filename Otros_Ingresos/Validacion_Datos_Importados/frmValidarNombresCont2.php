@@ -1,13 +1,54 @@
 <?php  require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
-require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php';
-$BUSCAR=1;
-$_SESSION['CODIGO_REGISTRO']=$CODIGO_REGISTRO;
+require '../Conexion_BD/Dbms.php';
+function validacionProcesoValue($name, $includeGet = false)
+{
+	$sources = $includeGet ? array($_POST, $_GET) : array($_POST);
+	foreach ($sources as $source) {
+		if (isset($source[$name]) && is_scalar($source[$name])) {
+			return (string) $source[$name];
+		}
+	}
+	return '';
+}
+$CODIGO_REGISTRO = validacionProcesoValue('CODIGO_REGISTRO', true);
+$COD_ASOCIACION = validacionProcesoValue('COD_ASOCIACION', true);
+if ($COD_ASOCIACION === '' && isset($_SESSION['COD_ASOCIACION'])) {
+	$COD_ASOCIACION = $_SESSION['COD_ASOCIACION'];
+}
+$ASOCIACION = isset($_SESSION['ASOCIACION']) ? $_SESSION['ASOCIACION'] : '';
+$ORDENANZA_MUNICIPAL = isset($_SESSION['ORDENANZA_MUNICIPAL']) ? $_SESSION['ORDENANZA_MUNICIPAL'] : '';
+$sltGestion = validacionProcesoValue('sltGestion', true);
+if ($sltGestion === '' && isset($_SESSION['sltGestion'])) {
+	$sltGestion = $_SESSION['sltGestion'];
+}
+$BUSCAR = validacionProcesoValue('BUSCAR', true);
+$REGMODPUESTO = validacionProcesoValue('REGMODPUESTO', true);
+$VALIDADO = validacionProcesoValue('VALIDADO', true);
+$EXCLUIR = validacionProcesoValue('EXCLUIR', true);
+$VALIDAR_TODO = validacionProcesoValue('VALIDAR_TODO', true);
+$Ids = validacionProcesoValue('Ids', true);
+$Idcs = validacionProcesoValue('Idcs', true);
+$NUMERO_GREMIAL = validacionProcesoValue('NUMERO_GREMIAL', true);
+$NroGremial = validacionProcesoValue('NroGremial', true);
+$CODIGO_CONTRIBUYENTE = validacionProcesoValue('CODIGO_CONTRIBUYENTE', true);
+$txtZona = validacionProcesoValue('txtZona', true);
+$sltVenta = validacionProcesoValue('sltVenta', true);
+$txtPuesto = validacionProcesoValue('txtPuesto', true);
+$txtFila = validacionProcesoValue('txtFila', true);
+if ($CODIGO_REGISTRO === '' && isset($_SESSION['CODIGO_REGISTRO'])) {
+	$CODIGO_REGISTRO = $_SESSION['CODIGO_REGISTRO'];
+}
+if ($CODIGO_REGISTRO === '' || $COD_ASOCIACION === '' || $sltGestion === '') {
+	echo "<script>alert('Faltan datos de asociación, gestión o registro para continuar.'); location.href='frmValidarNombresCont.php';</script>";
+	exit;
+}
+$_SESSION['CODIGO_REGISTRO'] = $CODIGO_REGISTRO;
+$_SESSION['COD_ASOCIACION'] = $COD_ASOCIACION;
+$_SESSION['ASOCIACION'] = $ASOCIACION;
+$_SESSION['ORDENANZA_MUNICIPAL'] = $ORDENANZA_MUNICIPAL;
+$_SESSION['sltGestion'] = $sltGestion;
+$BUSCAR = $BUSCAR === '' ? '1' : $BUSCAR;
  $COD_REGISTRO=date('Ymd His');
- if(empty($_SESSION['COD_ASOCIACION'])){include_once("Index.php");}
- if(empty($_SESSION['ASOCIACION'])){include_once("Index.php");}
- if(empty($_SESSION['ORDENANZA_MUNICIPAL'])){include_once("Index.php");}
- if(empty($_SESSION['sltGestion'])){include_once("Index.php");}
- if(empty($_SESSION['CODIGO_REGISTRO'])){include_once("Index.php");}
 //MODIIFICAR DATOS DE PUESTOS DE VENTA
 if($REGMODPUESTO==1){
 $query = mysql_query("UPDATE reg_contribuyente_asociacion  SET ESTADO='DATOS ACTUALIZADOS POR EL USUARIO $US_SIOI - $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO, FECHA: $FECHA HORA: $HORA' where REGISTRO_GREMIAL='$NroGremial' and ESTADO='ACTIVO'")or die ("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_contribuyente.");
@@ -34,7 +75,7 @@ echo"<script> alert('Se Actualizo los datos del Puesto de Venta.');</script>";
 if($VALIDADO==1){
 $COD_REGISTRO=date('Ymd His');
 $query = mysql_query("UPDATE reg_contribuyente_habilitado_pago  SET ESTADO_REGISTRO='REGISTRO VALIDADO.' where Id='$Ids' and CODIGO_CONTRIBUYENTE='$CODIGO_CONTRIBUYENTE' and ESTADO_ORDEN_PAGO='NO VALIDADO' and REGISTRO_GREMIAL='$NUMERO_GREMIAL' and ESTADO='ACTIVO' and ESTADO_PAGO='NO PAGO'")or die ("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_contribuyente_habilitado_pago.");	
-$sql1="insert into reg_validacion_datos_contribuyente(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,CODIGO_CONTRIBUYENTE,OBSERVACIONES)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$NUMERO_GREMIAL','$CODIGO_CONTRIBUYENTE','DATOS DE REGISTRO DE CONTRIBUYENTE VALIDADO POR EL USUARIO  $US_SIOI - $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO, EN FECHA: $FECHA HORA: $HORA.')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_validacion_datos_contribuyente.");
+$sql1="insert into reg_validacion_datos_contribuyente(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,CODIGO_CONTRIBUYENTE,OBSERVACIONES)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$NUMERO_GREMIAL','$CODIGO_CONTRIBUYENTE','DATOS DE REGISTRO DE CONTRIBUYENTE VALIDADO POR EL USUARIO  $US_SIOI - $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO, EN FECHA: $FECHA HORA: $HORA.')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_validacion_datos_contribuyente. Error MySQL: " . mysql_error($conexion_usuarios));
 //REGISTRA EN LA TABLA TRANSACCIONES.
 $COD_REGISTRO=date('Ymd His');
 $sql1="insert into reg_contribuyente_transacciones(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,TRANSACCION_1,DESCRIPCION_TRAMITE,OBSERVACIONES,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$COD_ASOCIACION','$ASOCIACION','VALIDACION DE DATOS','VALIDACION DE DATOS DEL CONTRIBUYENTE - NRO. GREMIAL $NUMERO_GREMIAL, GESTION DE PAGO $sltGestion.','VALIDACION DE DATOS DEL CONTRIBUYENTE - NRO. GREMIAL $NUMERO_GREMIAL, GESTION DE PAGO  $sltGestion.','0')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones."); 
@@ -59,7 +100,7 @@ $COD_REGISTRO=date('Ymd His');
 		  	  while($row=mysql_fetch_array($res)){
 				  
 $query = mysql_query("UPDATE reg_contribuyente_habilitado_pago  SET ESTADO_REGISTRO='REGISTRO VALIDADO.' where CODIGO_REGISTRO='$CODIGO_REGISTRO' and CODIGO_CONTRIBUYENTE='$row[7]' and REGISTRO_GREMIAL='$row[12]' and ESTADO='ACTIVO' and ESTADO_PAGO='NO PAGO' and ESTADO_REGISTRO='NO VALIDADO'")or die ("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_contribuyente_habilitado_pago.");	
-$sql1="insert into reg_validacion_datos_contribuyente(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,CODIGO_CONTRIBUYENTE,OBSERVACIONES)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$row[12]','$row[7]','DATOS DE REGISTRO DE CONTRIBUYENTE Y PUESTOS DE VENTA VALIDADOS POR EL USUARIO  $US_SIOI - $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO, EN FECHA: $FECHA HORA: $HORA.')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_validacion_datos_contribuyente.");
+$sql1="insert into reg_validacion_datos_contribuyente(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,CODIGO_CONTRIBUYENTE,OBSERVACIONES)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$row[12]','$row[7]','DATOS DE REGISTRO DE CONTRIBUYENTE Y PUESTOS DE VENTA VALIDADOS POR EL USUARIO  $US_SIOI - $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO, EN FECHA: $FECHA HORA: $HORA.')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_validacion_datos_contribuyente. Número gremial: $row[12]. Error MySQL: " . mysql_error($conexion_usuarios));
 //REGISTRA EN LA TABLA TRANSACCIONES.
 
 $sql1="insert into reg_contribuyente_transacciones(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,TRANSACCION_1,DESCRIPCION_TRAMITE,OBSERVACIONES,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$COD_ASOCIACION','$ASOCIACION','VALIDACION DE DATOS','VALIDACION DE DATOS DEL CONTRIBUYENTE Y PUESTOS DE VENTA - NRO. GREMIAL $row[12], GESTION DE PAGO $sltGestion.','VALIDACION DE DATOS DEL CONTRIBUYENTE  Y PUESTOS DE VENTA - NRO. GREMIAL $row[12], GESTION DE PAGO  $sltGestion.','0')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones."); 
@@ -81,8 +122,14 @@ $res=mysql_query("select  CONTRI.TIPO_DOCUMENTO,CONTRI.DOC_IDENTIDAD,CONTRI.DOC_
 <script src="../CssTablas/Js/jquery.dataTables.min.js"></script> 
 <script src="../CssTablas/Js/dataTables.bootstrap.min.js"></script>
 </head>
+<body>
 <form id="form1" name="form1" method="post" action="frmValidacionOpciones.php">
-<body><script>
+<input type="hidden" name="CODIGO_REGISTRO" value="<?php echo htmlspecialchars($CODIGO_REGISTRO, ENT_QUOTES, 'UTF-8'); ?>" />
+<input type="hidden" name="COD_ASOCIACION" value="<?php echo htmlspecialchars($COD_ASOCIACION, ENT_QUOTES, 'UTF-8'); ?>" />
+<input type="hidden" name="ASOCIACION" value="<?php echo htmlspecialchars($ASOCIACION, ENT_QUOTES, 'UTF-8'); ?>" />
+<input type="hidden" name="ORDENANZA_MUNICIPAL" value="<?php echo htmlspecialchars($ORDENANZA_MUNICIPAL, ENT_QUOTES, 'UTF-8'); ?>" />
+<input type="hidden" name="sltGestion" value="<?php echo htmlspecialchars($sltGestion, ENT_QUOTES, 'UTF-8'); ?>" />
+<script>
 var clicks=0;
 </script>
 <table width="100%" border="0">
@@ -149,8 +196,8 @@ var clicks=0;
         <td align="right"><table width="10%" border="0" cellspacing="0" cellpadding="0">
           <?php if($SW7==1){?> <tr>
             <?php if($SW7==1){?>
-            <td width="55%" align="right"><a href="frmValidarNombresCont2.php?sltGestion=<?php echo $sltGestion; ?>&BUSCAR=1&VALIDAR_TODO=1" title="VALIDAR TODOS LOS DATOS COMO CORRECTOS">Validar Todo</a></td>
-            <td width="7%"><a href="frmValidarNombresCont2.php?sltGestion=<?php echo $sltGestion; ?>&BUSCAR=1&VALIDAR_TODO=1" title="VALIDAR TODOS LOS DATOS COMO CORRECTOS"><img src="../Img/Validar.png" width="35" height="35" /></a></td> <?php } ?>
+            <td width="55%" align="right"><a href="frmValidarNombresCont2.php?sltGestion=<?php echo urlencode($sltGestion); ?>&amp;CODIGO_REGISTRO=<?php echo urlencode($CODIGO_REGISTRO); ?>&amp;COD_ASOCIACION=<?php echo urlencode($COD_ASOCIACION); ?>&amp;BUSCAR=1&amp;VALIDAR_TODO=1" title="VALIDAR TODOS LOS DATOS COMO CORRECTOS">Validar Todo</a></td>
+            <td width="7%"><a href="frmValidarNombresCont2.php?sltGestion=<?php echo urlencode($sltGestion); ?>&amp;CODIGO_REGISTRO=<?php echo urlencode($CODIGO_REGISTRO); ?>&amp;COD_ASOCIACION=<?php echo urlencode($COD_ASOCIACION); ?>&amp;BUSCAR=1&amp;VALIDAR_TODO=1" title="VALIDAR TODOS LOS DATOS COMO CORRECTOS"><img src="../Img/Validar.png" width="35" height="35" /></a></td> <?php } ?>
         
           <tr>
             <td align="right"><img src="../Img/Blanco.png" width="100" height="1" /></td>
@@ -210,20 +257,20 @@ var clicks=0;
               <td align="center"><?php if($row[8]=='NO VALIDADO'){?>
                 <table width="10%" border="0">
                   <tr>
-                    <td width="14%"><a href="frmModificarDatosPuesto.php?Ids=<?php echo $row[15]; ?>&sltGestion=<?php echo $row[13]; ?>&NUMERO_GREMIAL=<?php echo $row[12];?>&CODIGO_CONTRIBUYENTE=<? echo $row[7];?>" title="MODIFICAR DATOS DE PUESTO"><img src="../Img/Adicionar.png" width="35" height="35" /></a></td>
+                    <td width="14%"><a href="frmModificarDatosPuesto.php?Ids=<?php echo urlencode($row[15]); ?>&amp;sltGestion=<?php echo urlencode($row[13]); ?>&amp;NUMERO_GREMIAL=<?php echo urlencode($row[12]); ?>&amp;CODIGO_CONTRIBUYENTE=<?php echo urlencode($row[7]); ?>&amp;CODIGO_REGISTRO=<?php echo urlencode($CODIGO_REGISTRO); ?>&amp;COD_ASOCIACION=<?php echo urlencode($COD_ASOCIACION); ?>" title="MODIFICAR DATOS DE PUESTO"><img src="../Img/Adicionar.png" width="35" height="35" /></a></td>
                     </tr>
                   </table>
                 <?php } ?></td>
               <td align="center"><?php if($row[8]=='NO VALIDADO'){?>
                 <table width="10%" border="0">
                   <tr>
-                    <td width="14%"><a href="frmValidarNombresCont2.php?Ids=<?php echo $row[15]; ?>&sltGestion=<?php echo $row[13]; ?>&NUMERO_GREMIAL=<?php echo $row[12];?>&BUSCAR=1&CODIGO_CONTRIBUYENTE=<? echo $row[7];?>&EXCLUIR=1" title="EXCLUIR PAGO DE IMPUESTO"><img src="../Img/excluir.png" width="30" height="30" /></a></td>
+                    <td width="14%"><a href="frmValidarNombresCont2.php?Ids=<?php echo urlencode($row[15]); ?>&amp;sltGestion=<?php echo urlencode($row[13]); ?>&amp;NUMERO_GREMIAL=<?php echo urlencode($row[12]); ?>&amp;BUSCAR=1&amp;CODIGO_CONTRIBUYENTE=<?php echo urlencode($row[7]); ?>&amp;CODIGO_REGISTRO=<?php echo urlencode($CODIGO_REGISTRO); ?>&amp;COD_ASOCIACION=<?php echo urlencode($COD_ASOCIACION); ?>&amp;EXCLUIR=1" title="EXCLUIR PAGO DE IMPUESTO"><img src="../Img/excluir.png" width="30" height="30" /></a></td>
                   </tr>
                 </table>
                 <?php } ?></td>
               <td align="center"><?php if($row[8]=='NO VALIDADO'){?><table width="10%" border="0">
                 <tr>
-                  <td width="14%"><a href="frmValidarNombresCont2.php?Ids=<?php echo $row[15]; ?>&sltGestion=<?php echo $row[13]; ?>&NUMERO_GREMIAL=<?php echo $row[12];?>&BUSCAR=1&CODIGO_CONTRIBUYENTE=<? echo $row[7];?>&VALIDADO=1" title="DATOS CORRECTOS"><img src="../Img/Validar.png" width="30" height="35" /></a></td>
+                  <td width="14%"><a href="frmValidarNombresCont2.php?Ids=<?php echo urlencode($row[15]); ?>&amp;sltGestion=<?php echo urlencode($row[13]); ?>&amp;NUMERO_GREMIAL=<?php echo urlencode($row[12]); ?>&amp;BUSCAR=1&amp;CODIGO_CONTRIBUYENTE=<?php echo urlencode($row[7]); ?>&amp;CODIGO_REGISTRO=<?php echo urlencode($CODIGO_REGISTRO); ?>&amp;COD_ASOCIACION=<?php echo urlencode($COD_ASOCIACION); ?>&amp;VALIDADO=1" title="DATOS CORRECTOS"><img src="../Img/Validar.png" width="30" height="35" /></a></td>
                   </tr>
               </table><?php }else{ echo 'VALIDADO.';$conts++;} ?></td>
               </tr>
@@ -252,7 +299,8 @@ var clicks=0;
   </tr>
 </table>
 <?php include '../CssTablas/frmPieTabla.php'?>
-</body></form>
+</form>
+</body>
 </html><?php  require '../Conexion_BD/Cerrar_Dbms.php';
 if($SWMENSAJE==1){echo"<script> alert('Existe Observaciones en los Registros.');</script>";}
 ?>

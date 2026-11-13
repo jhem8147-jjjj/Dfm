@@ -1,4 +1,4 @@
-﻿<?php require_once('../../Control_Sesiones_Forms/frmControlSesionUsuario.php');require '../../Conexion_BD/Dbms.php';$GESTION=date('Y');
+<?php require_once('../../Control_Sesiones_Forms/frmControlSesionUsuario.php');require '../../Conexion_BD/Dbms.php';$GESTION=date('Y');
 $cont=0;
 $ANIOS=date('Y')-1;
 $COD_REGISTRO=date('Ymd').rand(1,100);
@@ -88,7 +88,7 @@ $SWT=0;
 $I=30;
 $J=70;
 $K=4;
-$resulty=mysql_query("select * from reg_comunicacion_interna_autoridades where ESTADO='ACTIVO' order by NIVEL "); while($rowy=mysql_fetch_array($resulty)){if($rowy['NIVEL']=='NIVEL 1'){ $NIVELES='A :'; }else{$NIVELES='VIA :';}
+$resulty=mysql_query("select * from reg_comunicacion_interna_autoridades where ESTADO='ACTIVO' and NIVEL is not null and trim(NOMBRE_A)<>'' and trim(CARGO_A)<>'' order by NIVEL "); while($rowy=mysql_fetch_array($resulty)){if($rowy['NIVEL']=='NIVEL 1'){ $NIVELES='A :'; }else{$NIVELES='VIA :';}
 $NOMB_EMISOR=$SIAUNOMBRES.' '.$USPRIMERAPELLIDO.' '.$SIAUSEGUNDOAPELLIDO;
 if (strpos($rowy['NOMBRE_A'], $NOMB_EMISOR) !== false) {
 $SWT=1;

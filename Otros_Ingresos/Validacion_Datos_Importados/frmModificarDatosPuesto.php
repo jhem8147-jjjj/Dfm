@@ -1,5 +1,5 @@
 <?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
-require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php';
+require '../Conexion_BD/Dbms.php';
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
