@@ -19,7 +19,7 @@ body {
 <ul>
  <?php $roles=mysql_query("select distinct(case when MS.ENLACE like '%Desimportacion_Masiva_Impuesto_Anual%' or (MS.DESCRIPCION like '%Inhabilitar%' and MS.DESCRIPCION like '%Contribuyente%') then 'Contribuyente' else MS.GRUPO end) as GRUPO from asignacion_roles AS AR INNER JOIN menu_oi AS MS ON(AR.CODIGO_ROL=MS.CODIGO_ROL AND AR.ESTADO='VIGENTE' AND AR.USUARIO='$US_SIOI' and AR.APLICACION='SIOI') where MS.ESTADO='ACTIVO' order by GRUPO");while($rows=mysql_fetch_array($roles)){?>
 <li>
-	<div><?php echo $rows['GRUPO'];?>
+	<div><?php echo htmlspecialchars(strtoupper($rows['GRUPO']), ENT_QUOTES, 'UTF-8');?>
 	</div>
 <ul> 
 	<?php  $grupo=mysql_real_escape_string($rows['GRUPO']); $rol=mysql_query("select MS.DESCRIPCION, MS.ENLACE, MS.POSICION from asignacion_roles AS AR INNER JOIN menu_oi AS MS ON(AR.CODIGO_ROL=MS.CODIGO_ROL AND AR.ESTADO='VIGENTE' AND AR.USUARIO='$US_SIOI' and MS.ESTADO='ACTIVO') where (case when MS.ENLACE like '%Desimportacion_Masiva_Impuesto_Anual%' or (MS.DESCRIPCION like '%Inhabilitar%' and MS.DESCRIPCION like '%Contribuyente%') then 'Contribuyente' else MS.GRUPO end)='$grupo' order by case when '$grupo'='Contribuyente' and MS.DESCRIPCION like '%Importar%' then 1 when '$grupo'='Contribuyente' and MS.DESCRIPCION like '%Validaci%' then 2 when MS.ENLACE like '%Desimportacion_Masiva_Impuesto_Anual%' or (MS.DESCRIPCION like '%Inhabilitar%' and MS.DESCRIPCION like '%Contribuyente%') then 3 else 4 end, MS.DESCRIPCION");while($row=mysql_fetch_array($rol)){ ?><li><a href="<?php echo $row['1'];?>" target="<?php echo $row['2'];?>"><?php echo $row['0'];?></a></li><?php } ?></ul>

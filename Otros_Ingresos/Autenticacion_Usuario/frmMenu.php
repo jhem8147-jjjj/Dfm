@@ -173,7 +173,7 @@ if (!$roles) {
 
     <li>
         <div>
-            <?php echo htmlspecialchars($rows['GRUPO'], ENT_QUOTES, 'UTF-8'); ?>
+            <?php echo htmlspecialchars(strtoupper($rows['GRUPO']), ENT_QUOTES, 'UTF-8'); ?>
         </div>
 
         <ul>

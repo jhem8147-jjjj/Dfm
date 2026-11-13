@@ -95,9 +95,9 @@ foreach ($idsContribuyentes as $idContribuyente) {
 
 $COD_REGISTRO=date('Ymd His');
 $sql1="insert into reg_contribuyente_transacciones(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,TRANSACCION_1,DESCRIPCION_TRAMITE,OBSERVACIONES,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$COD_ASOCIACION_SQL','$ASOCIACION_SQL','COMUNICACION INTERNA PAGO IMPUESTO ANUAL $sltGestion_SQL','COMUNICACION INTERNA - $COMUNICACION_INTERNA.','COMUNICACION INTERNA - $COMUNICACION_INTERNA.','0')";
-$result=mysql_query($sql1) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones.");
+$result=mysql_query($sql1) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones. Error MySQL: " . mysql_error($conexion_usuarios));
 $sql1="insert into reg_comunicacion_interna(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,COMUNICACION_INTERNA,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$COD_ASOCIACION_SQL','$ASOCIACION_SQL','$COMUNICACION_INTERNA','$wordRelativePathSql - PARA LA GESTION $sltGestion_SQL')";
-$result=mysql_query($sql1) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones.");
+$result=mysql_query($sql1) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_comunicacion_interna. Error MySQL: " . mysql_error($conexion_usuarios));
 
 require '../../Conexion_BD/Cerrar_Dbms.php';
 $nombreDescarga = $NOMBRE.'.docx';
