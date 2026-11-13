@@ -78,7 +78,7 @@ $_SESSION['COD_REGISTRO'] = $COD_REGISTRO;
             </tr>
             <tr>
               <td align="right"><img src="../Img/Blanco.png" width="300" height="8" /></td>
-              <td><input type="submit" name="button" id="button" value="Buscar Datos Cargados" style="width:250px; height:35px"  /></td>
+              <td><input type="submit" name="button" id="button" value="Buscar Datos Cargados" style="width:250px; height:35px" /></td>
             </tr>
           </table>
         </form>

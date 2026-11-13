@@ -2,20 +2,36 @@
 function fileValidation(){
     var fileInput = document.getElementById('excel');
     var filePath = fileInput.value;
-    var allowedExtensions = /(.xls|.xlsx)$/i;
+    var allowedExtensions = /\.(xls|xlt|xlsx|xlsm|xltx|xltm|xml|ods|ots)$/i;
+    var submitButton = document.getElementById('button');
+    var preview = document.getElementById('imagePreview');
+
     if(!allowedExtensions.exec(filePath)){
-        alert('Por favor suba el archivo que tiene extensiones .xls/.xlsx solamente.');
-        fileInput.value = '';
-        return false;
-    }else{
-        //Image preview
-        if (fileInput.files && fileInput.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-				 document.getElementById('imagePreview').innerHTML = '<img src="../Img/Validar.png" width="25" height="25"/>';
-				 document.getElementById('button').disabled=false;
-            };
-            reader.readAsDataURL(fileInput.files[0]);
+        if (filePath !== '') {
+            alert('Seleccione un archivo Excel (.xls, .xlsx, .xlsm, .xlt, .xltx, .xltm o .xml) o OpenDocument (.ods, .ots).');
+            fileInput.value = '';
         }
+        preview.innerHTML = '';
+        submitButton.disabled = true;
+        return false;
     }
+
+    preview.innerHTML = '<span class="comentario">Archivo seleccionado</span>';
+    submitButton.disabled = false;
+    return true;
+}
+
+function importacionEnviada(){
+    var fileInput = document.getElementById('excel');
+    var allowedExtensions = /\.(xls|xlt|xlsx|xlsm|xltx|xltm|xml|ods|ots)$/i;
+    var submitButton = document.getElementById('button');
+
+    if(!fileInput || !allowedExtensions.test(fileInput.value)){
+        alert('Seleccione un archivo Excel u OpenDocument compatible antes de continuar.');
+        return false;
+    }
+
+    submitButton.value = 'Procesando...';
+    submitButton.disabled = true;
+    return true;
 }

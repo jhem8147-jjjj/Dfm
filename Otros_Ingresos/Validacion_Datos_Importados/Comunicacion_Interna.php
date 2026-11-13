@@ -35,7 +35,7 @@ $HOY_ES=$dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " del ".date
 $NOMBRE='';
 	$NOMBRE='COM_INT_SMSC_DFM_UF_ARP_00'.$CODIGO_NRO.'_'.$GESTION;?>
 <?php /* En los encabezados indicamos que se trata de un documento de MS-WORD
-  y en el nombre de archivo le ponemos la extensión RTF.            */
+  y en el nombre de archivo le ponemos la extensiï¿½n RTF.            */
 header('Content-type: application/vnd.msword');
 header("Content-Disposition: attachment; filename=".$NOMBRE.".doc");
 header("Pragma: no-cache"); header("Expires: 0");  
@@ -167,7 +167,7 @@ body,td,th {
     <td colspan="2" align="justify" class="Estilo23">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="2" align="justify" class="Estilo23">Se aclara que el asentamiento en la via publica es de caracter estrictamente provisional, según se establece la Ley Municipal 291/2015 y  su reglamentación Decreto Edil 246/2015.</td>
+    <td colspan="2" align="justify" class="Estilo23">Se aclara que el asentamiento en la via publica es de caracter estrictamente provisional, segï¿½n se establece la Ley Municipal 291/2015 y  su reglamentaciï¿½n Decreto Edil 246/2015.</td>
   </tr>
   <tr>
     <td colspan="2" align="justify">&nbsp;</td>

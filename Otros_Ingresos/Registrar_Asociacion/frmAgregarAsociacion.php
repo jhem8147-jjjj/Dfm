@@ -12,7 +12,7 @@ require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/D
 
 </head>
 <form  method="post" action='frmRegAsociacion.php' enctype="multipart/form-data">
-<body oncopy="return false" onpaste="return false">
+<body>
 <table width="100%" border="0">
   <tr>
     <td align="center" class="TITULO">REGISTRAR ASOCIACION</td>
@@ -33,18 +33,18 @@ require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/D
     <td><table width="20%" border="0" cellspacing="1">
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Nro. Carpeta :</td>
-        <td class="comentario"><input name="txtCarpeta" type="text" id="txtCarpeta" onChange="javascript:this.value=this.value.toUpperCase();" onkeypress="return soloNumAlfSig(event)" size="50" required="required" placeholder="No. DE CARPETA."/></td>
+        <td class="comentario"><input name="txtCarpeta" type="text" id="txtCarpeta" onChange="javascript:this.value=this.value.toUpperCase();" size="50" required="required" placeholder="No. DE CARPETA."/></td>
         <td class="comentario">&nbsp;</td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Documento de Registro :</td>
-        <td class="comentario"><input name="txtOrdenanzaMunicipal" type="text" id="txtOrdenanzaMunicipal" onChange="javascript:this.value=this.value.toUpperCase();" onKeyPress="return soloNumAlfSig(event)" placeholder="Nro.DE O.M. O RAMS."  onkeyup="buscar_ajax(this.value);" size="50" required="required"/>
+        <td class="comentario"><input name="txtOrdenanzaMunicipal" type="text" id="txtOrdenanzaMunicipal" onChange="javascript:this.value=this.value.toUpperCase();" placeholder="Nro.DE O.M. O RAMS."  onkeyup="buscar_ajax(this.value);" size="50" required="required"/>
           <input name="txtSw" type="hidden" id="txtSw" value="1" /></td>
         <td class="comentario">&nbsp;</td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Nombre de la Asociación :</td>
-        <td class="comentario"><input name="txtDescripcion" type="text" id="txtDescripcion"   onchange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation()" onKeyPress="return soloNumAlfSig(event)" placeholder="NOMBRE DE LA ASOCIACION" size="50" required/></td>
+        <td class="comentario"><input name="txtDescripcion" type="text" id="txtDescripcion"   onchange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation()" placeholder="NOMBRE DE LA ASOCIACION" size="50" required/></td>
         <td class="comentario">&nbsp;</td>
       </tr>
       <tr>
@@ -54,12 +54,12 @@ require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/D
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Zona de Asentamiento :</td>
-        <td class="comentario"><input name="txtZona" type="text" id="txtZona" onchange="javascript:this.value=this.value.toUpperCase();" onKeyPress="return soloNumAlfSig(event)" onkeyup="return fileValidation()" size="50" maxlength="1000" placeholder="ZONA DE ASENTAMIENTO" required="required"/></td>
+        <td class="comentario"><input name="txtZona" type="text" id="txtZona" onchange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation()" size="50" maxlength="1000" placeholder="ZONA DE ASENTAMIENTO" required="required"/></td>
         <td class="comentario">&nbsp;</td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Direccion descriptiva de puestos de Venta :</td>
-        <td class="comentario"><textarea name="txtDireccion" id="txtDireccion" cols="38" rows="2" maxlength="2000" onChange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation()" onKeyPress="return soloNumAlfSig(event)" placeholder="DIRECCION DESCRIPTIVA DE PUESTOS DE VENTA." required></textarea></td>
+        <td class="comentario"><textarea name="txtDireccion" id="txtDireccion" cols="38" rows="2" maxlength="2000" onChange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation()" placeholder="DIRECCION DESCRIPTIVA DE PUESTOS DE VENTA." required></textarea></td>
         <td class="comentario">&nbsp;</td>
       </tr>
       <tr>
@@ -79,7 +79,7 @@ require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/D
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC">Observaciones :</td>
-        <td><textarea name="txtObservacion" id="txtObservacion" maxlength="255" cols="38" rows="2" onchange="javascript:this.value=this.value.toUpperCase();" onkeypress="return soloNumAlfSig(event)" placeholder="OBSERVACIONES." ></textarea></td>
+        <td><textarea name="txtObservacion" id="txtObservacion" maxlength="255" cols="38" rows="2" onchange="javascript:this.value=this.value.toUpperCase();" placeholder="OBSERVACIONES." ></textarea></td>
         <td>&nbsp;</td>
       </tr>
       <tr>

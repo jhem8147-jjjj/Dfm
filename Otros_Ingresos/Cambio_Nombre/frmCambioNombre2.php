@@ -24,7 +24,28 @@ while($rowst=mysql_fetch_array($rest)){
 		  }
 
 if($SWCONTRI==1){
-$sql1="insert into reg_contribuyente_asociacion(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,CODIGO_CONTRIBUYENTE,CODIGO_ASOCIACION,CODIGO_ZONA,TIPO_VENTA,PUESTO,FILA,OBSERVACIONES)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$NUMERO_GREMIAL','$CODIGO_NUEVO_CONTRIBUYENTE','$COD_ASOCIACION','$CODIGO_ZONAS','$TIPO_PUESTOS','$PUESTOS','$FILAS','REGISTRO POR CAMBIO DE NOMBRE REALIZADO POR $TIPO_CAMBIO, POR EL USUARIO $US_SIOI - $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO, FECHA: $FECHA HORA: $HORA')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_asociacion.");
+$PC_NAME_SQL = mysql_real_escape_string($hostname);
+$PC_IP_SQL = mysql_real_escape_string($hostlocal);
+$USUARIO_SQL = mysql_real_escape_string($US_SIOI);
+$NOMBRE_USUARIO_SQL = mysql_real_escape_string($SIAUNOMBRES.' '.$USPRIMERAPELLIDO.' '.$SIAUSEGUNDOAPELLIDO);
+$FECHA_SQL = mysql_real_escape_string($FECHA);
+$HORA_SQL = mysql_real_escape_string($HORA);
+$COD_REGISTRO_SQL = mysql_real_escape_string($COD_REGISTRO);
+$NUMERO_GREMIAL_SQL = mysql_real_escape_string($NUMERO_GREMIAL);
+$CODIGO_NUEVO_CONTRIBUYENTE_SQL = mysql_real_escape_string($CODIGO_NUEVO_CONTRIBUYENTE);
+$COD_ASOCIACION_SQL = mysql_real_escape_string($COD_ASOCIACION);
+$CODIGO_ZONAS_SQL = mysql_real_escape_string($CODIGO_ZONAS);
+$TIPO_PUESTOS_SQL = mysql_real_escape_string($TIPO_PUESTOS);
+$PUESTOS_SQL = mysql_real_escape_string($PUESTOS);
+$FILAS_SQL = mysql_real_escape_string($FILAS);
+$OBSERVACIONES_SQL = mysql_real_escape_string("REGISTRO POR CAMBIO DE NOMBRE REALIZADO POR $TIPO_CAMBIO, POR EL USUARIO $US_SIOI - $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO, FECHA: $FECHA HORA: $HORA");
+$sql1="insert into reg_contribuyente_asociacion(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,CODIGO_CONTRIBUYENTE,CODIGO_ASOCIACION,CODIGO_ZONA,TIPO_VENTA,PUESTO,FILA,OBSERVACIONES)values('$PC_NAME_SQL','$PC_IP_SQL','$USUARIO_SQL','$NOMBRE_USUARIO_SQL','$FECHA_SQL','$HORA_SQL','$COD_REGISTRO_SQL','$NUMERO_GREMIAL_SQL','$CODIGO_NUEVO_CONTRIBUYENTE_SQL','$COD_ASOCIACION_SQL','$CODIGO_ZONAS_SQL','$TIPO_PUESTOS_SQL','$PUESTOS_SQL','$FILAS_SQL','$OBSERVACIONES_SQL')";
+$result=mysql_query($sql1);
+if($result===false){
+	$errorMysql=mysql_error();
+	error_log('Cambio de nombre: fallo INSERT en reg_contribuyente_asociacion: '.$errorMysql);
+	die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_asociacion. Detalle MySQL: ".htmlspecialchars($errorMysql, ENT_QUOTES, 'UTF-8'));
+}
 
 //OBTIENE MONTO
 $res=mysql_query("select * from cambio_nombre where  ESTADO='ACTIVO' and CODIGO_ZONA_ like '$CODIGO_ZONAS'");

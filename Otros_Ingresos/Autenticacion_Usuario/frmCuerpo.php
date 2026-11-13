@@ -2,7 +2,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 body {
-	background-color: #F5FEB8;
+	background-color: #DBC4F3;
 }
 </style>
 <body onselectstart="return false" oncontextmenu="return false" ondragstart="return false" onMouseOver="window.status='.:: GREMIALES ::.'; return true;">

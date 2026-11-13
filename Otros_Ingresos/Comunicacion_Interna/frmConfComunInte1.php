@@ -1,14 +1,16 @@
-<?php  require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
-require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php';
+<?php
+header('Content-Type: text/html; charset=UTF-8');
+require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
+require '../Conexion_BD/Dbms.php';
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel='StyleSheet' href='../Css_Formularios/frmProcesos.css' type="text/css">
 <script src='Js/frmValida.js' type="text/javascript"></script>
 </head>
-<form method="post" action="frmConfComunInte.php">
 <body>
+<form method="post" accept-charset="UTF-8" action="frmConfComunInte.php">
 <table width="10%" border="0">
   <tr>
     <td align="center" class="TITULO">&nbsp;</td>
@@ -38,20 +40,20 @@ require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/D
             <option><?php echo $row['0'];?></option>
             <?PHP }} ?>
           </select>
-        </select></td>
+        </td>
       </tr>
       <tr>
         <td height="32" align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Grado :</td>
-        <td style="font-weight: bold"><input type="text" name="txtGrado" id="txtGrado" style="height:30px; width:400px" onkeyup="return fileValidation();"  onchange="javascript:this.value=this.value.toUpperCase();" placeholder="GRADO (LIC. SR. SRA. )" onkeypress="return soloNumAlfSig(event)" required="required"/></td>
+        <td style="font-weight: bold"><input type="text" name="txtGrado" id="txtGrado" style="height:30px; width:400px" onkeyup="return fileValidation();"  onchange="javascript:this.value=this.value.toUpperCase();" placeholder="GRADO (LIC. SR. SRA. )" required="required"/></td>
       </tr>
       <tr>
         <td height="32" align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Nombre Completo :</td>
-        <td style="font-weight: bold"><input type="text" name="txtNombres" id="txtNombres" style="height:30px; width:400px"  onkeyup="return fileValidation();"  onchange="javascript:this.value=this.value.toUpperCase();" placeholder="NOMBRE(S) COMPLETO" onKeyPress="return soloLetras(event)" required/>
+        <td style="font-weight: bold"><input type="text" name="txtNombres" id="txtNombres" style="height:30px; width:400px"  onkeyup="return fileValidation();"  onchange="javascript:this.value=this.value.toUpperCase();" placeholder="NOMBRE(S) COMPLETO" required/>
           <input name="REG" type="hidden" id="REG" value="1" /></td>
       </tr>
       <tr>
         <td height="32" align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Cargo :</td>
-        <td style="font-weight: bold"><input type="text" name="txtCargo" id="txtCargo" style="height:30px; width:400px"  onchange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation();"  placeholder="CARGO" onKeyPress="return soloLetras(event)" required="required"/></td>
+        <td style="font-weight: bold"><input type="text" name="txtCargo" id="txtCargo" style="height:30px; width:400px"  onchange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation();"  placeholder="CARGO" required="required"/></td>
       </tr>
       <tr>
         <td height="32" align="right"><img src="../Img/Blanco.png" width="370" height="6" /></td>
@@ -70,17 +72,11 @@ require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/D
     <td class="ASTERISCO">VER. 2</td>
   </tr>
 </table>
-</body></form>
+</form>
+</body>
 </html><?php 
 
 function normaliza ($cadena){
-    $originales = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ
-ßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ';
-    $modificadas = 'aaaaaaaceeeeiiiidnoooooouuuuy
-bsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
-    $cadena = utf8_decode($cadena);
-    $cadena = strtr($cadena, utf8_decode($originales), $modificadas);
-    $cadena = strtoupper($cadena);
-    return utf8_encode($cadena);
+    return mb_strtoupper($cadena, 'UTF-8');
 }
 require '../Conexion_BD/Cerrar_Dbms.php';?>

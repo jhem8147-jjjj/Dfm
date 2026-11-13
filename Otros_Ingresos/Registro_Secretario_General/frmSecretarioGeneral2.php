@@ -1,17 +1,18 @@
-<?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php'); 
- require_once('../Control_Sesiones_Forms/Loading.php'); 
- require '../Conexion_BD/Dbms.php';
+<?php
+header('Content-Type: text/html; charset=UTF-8');
+require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
+require '../Conexion_BD/Dbms.php';
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel='StyleSheet' href='../Css_Formularios/frmProcesos.css' type="text/css">
 <script src='Js/frmValida.js' type="text/javascript"></script>
 </head>
-<form method="post" action="frmSecretarioGeneral1.php">
 <body>
+<form method="post" accept-charset="UTF-8" action="frmSecretarioGeneral1.php">
 <table width="10%" border="0">
   <tr>
     <td align="center" class="TITULO">&nbsp;</td>
@@ -97,15 +98,15 @@
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Nombre(s) :</td>
-        <td style="font-weight: bold"><input name="txtNombres" type="text" id="txtNombres"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();" onkeypress="return soloLetras(event)" onkeyup="return fileValidation()" maxlength="100" placeholder="NOMBRE(S)" required="required"/></td>
+        <td style="font-weight: bold"><input name="txtNombres" type="text" id="txtNombres"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation()" maxlength="100" placeholder="NOMBRE(S)" required="required"/></td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Primer Apellido :</td>
-        <td style="font-weight: bold"><input name="txtPapellido" type="text" id="txtPapellido"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();"  onkeypress="return soloLetras(event)" onkeyup="return fileValidation()" maxlength="100" placeholder="PRIMER APELLIDO" required="required"/></td>
+        <td style="font-weight: bold"><input name="txtPapellido" type="text" id="txtPapellido"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation()" maxlength="100" placeholder="PRIMER APELLIDO" required="required"/></td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC">Segundo Apellido :</td>
-        <td style="font-weight: bold"><input name="txtSapellido" type="text" id="txtSapellido"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();"  onkeypress="return soloLetras(event)" maxlength="100" placeholder="SEGUNDO APELLIDO"/></td>
+        <td style="font-weight: bold"><input name="txtSapellido" type="text" id="txtSapellido"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();" maxlength="100" placeholder="SEGUNDO APELLIDO"/></td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC">Teléfono :</td>
@@ -150,5 +151,6 @@
     <td class="ASTERISCO">VER. 2</td>
   </tr>
 </table>
-</body></form>
+</form>
+</body>
 </html>

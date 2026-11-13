@@ -1,15 +1,11 @@
-<?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
-require_once('../Control_Sesiones_Forms/Loading.php');
-if(empty($_SESSION['COD_REGISTRO'])){include_once("Index.php");}
-if(empty($_SESSION['CODIGO_ZONA_TRIB'])){include_once("Index.php");}
-if(empty($_SESSION['COD_ASOCIACION'])){include_once("Index.php");}
-if(empty($_SESSION['ASOCIACION'])){include_once("Index.php");}
-if(empty($_SESSION['txtCodigoRegistro'])){include_once("Index.php");}
-if(empty($_SESSION['txtFecha'])){include_once("Index.php");}
-if(empty($_SESSION['txtObservaciones'])){include_once("Index.php");}
-if(empty($_SESSION['sltGestion'])){include_once("Index.php");}
- ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?php header('Content-Type: text/html; charset=utf-8');
+require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
+if(empty($_SESSION['COD_REGISTRO']) || empty($_SESSION['CODIGO_ZONA_TRIB']) || empty($_SESSION['COD_ASOCIACION']) || empty($_SESSION['ASOCIACION']) || empty($_SESSION['txtCodigoRegistro']) || empty($_SESSION['txtDocumento']) || empty($_SESSION['txtFecha']) || empty($_SESSION['sltGestion'])){
+    header('Location: Index.php');
+    exit;
+}
+ ?><!DOCTYPE html>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel='StyleSheet' href='../Css_Formularios/frmProcesos.css' type="text/css">
@@ -43,7 +39,7 @@ if(empty($_SESSION['sltGestion'])){include_once("Index.php");}
       </tr>
       <tr>
         <td bgcolor="#E3F0F2">1</td>
-        <td bgcolor="#E3F0F2">Generar Comunicación Interna, Autorización para Área de Otros Ingresos.</td>
+        <td bgcolor="#E3F0F2">Generar Comunicación Interna, Autorización para área de Otros Ingresos.</td>
         <td><form  method="post" action='Pdf_Complementos/frmGenerarComunInternaCC.php' target="_blank" rel="noopener noreferrer"><input type="submit" name="button3" id="button3" value="Generar Comunicación Interna" style="width:200px; height:35px" />
         </form></td>
       </tr>

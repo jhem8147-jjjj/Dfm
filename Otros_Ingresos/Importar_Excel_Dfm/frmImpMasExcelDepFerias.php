@@ -1,46 +1,95 @@
-﻿<?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
-require_once('../Control_Sesiones_Forms/Loading.php');
+<?php
+require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
 require '../Conexion_BD/Dbms.php';
-if (empty($_SESSION['COD_ASOCIACION'])) {
-  include_once("Index.php");
+function importarDepFeriasRequestValue($name)
+{
+  return isset($_POST[$name]) && is_scalar($_POST[$name])
+    ? (string)$_POST[$name]
+    : '';
 }
-if (empty($_SESSION['DOCUMENTOASOC'])) {
-  include_once("Index.php");
+$COD_ASOCIACION = importarDepFeriasRequestValue('COD_ASOCIACION');
+$DOCUMENTOASOC = importarDepFeriasRequestValue('DOCUMENTOASOC');
+$ASOCIACION = importarDepFeriasRequestValue('ASOCIACION');
+$sltGestion = importarDepFeriasRequestValue('sltGestion');
+$REG = importarDepFeriasRequestValue('REG');
+if ($COD_ASOCIACION === '') {
+  $COD_ASOCIACION = isset($_SESSION['COD_ASOCIACION']) ? $_SESSION['COD_ASOCIACION'] : '';
 }
-if (empty($_SESSION['ASOCIACION'])) {
-  include_once("Index.php");
+if ($DOCUMENTOASOC === '') {
+  $DOCUMENTOASOC = isset($_SESSION['DOCUMENTOASOC']) ? $_SESSION['DOCUMENTOASOC'] : '';
 }
-if (empty($_SESSION['sltGestion'])) {
-  include_once("Index.php");
+if ($ASOCIACION === '') {
+  $ASOCIACION = isset($_SESSION['ASOCIACION']) ? $_SESSION['ASOCIACION'] : '';
 }
+if ($sltGestion === '') {
+  $sltGestion = isset($_SESSION['sltGestion']) ? $_SESSION['sltGestion'] : '';
+}
+if ($REG !== '1' || $COD_ASOCIACION === '' || $DOCUMENTOASOC === '' || $ASOCIACION === '' || $sltGestion === '') {
+  echo "<script>alert('La información de asociación o gestión está incompleta. Inicie nuevamente la importación.')</script>";
+  echo "<script>location.href='frmImpMasAsocFerias.php';</script>";
+  exit;
+}
+$_SESSION['COD_ASOCIACION'] = $COD_ASOCIACION;
+$_SESSION['DOCUMENTOASOC'] = $DOCUMENTOASOC;
+$_SESSION['ASOCIACION'] = $ASOCIACION;
+$_SESSION['sltGestion'] = $sltGestion;
 if ($REG == 1) {
-  //$COD_REGISTRO=date('Ymd His');
-  //$_SESSION['COD_REGISTRO'] =$COD_REGISTRO;
-  $archivo = $_FILES['excel']['name']; //captura el nombre del archivo
-  $tipo = $_FILES['excel']['type']; //captura el tipo de archivo (2003 o 2007)
-  $destino = "bak_" . $archivo; //lugar donde se copiara el archivo
-  if (copy($_FILES['excel']['tmp_name'], $destino)) //si dese copiar la variable excel (archivo).nombreTemporal a destino (bak_.archivo) (si se ha dejado copiar)
-  {
-  }
-
-  if (file_exists("bak_" . $archivo)) //validacion para saber si el archivo ya existe previamente
-  {
-    /*INVOCACION DE CLASES Y CONEXION A BASE DE DATOS*/
-    /** Invocacion de Clases necesarias */
-    require_once('Classes/PHPExcel.php');
-    require_once('Classes/PHPExcel/Reader/Excel2007.php');
-    // Cargando la hoja de calculo
-    $objReader = new PHPExcel_Reader_Excel2007(); //instancio un objeto como PHPExcelReader(objeto de captura de datos de excel)
-    $objPHPExcel = $objReader->load("bak_" . $archivo); //carga en objphpExcel por medio de objReader,el nombre del archivo
-    $objFecha = new PHPExcel_Shared_Date();
-    // Asignar hoja de excel activa
-    $objPHPExcel->setActiveSheetIndex(0); //objPHPExcel tomara la posicion de hoja (en esta caso 0 o 1) con el setActiveSheetIndex(numeroHoja)
-    // Llenamos un arreglo con los datos del archivo xlsx
-    //valida las cabeceras de excel
-    $RUAT = $objPHPExcel->getActiveSheet()->getCell('Z1')->getCalculatedValue();
-    if ($RUAT == 'GREMIAL') {
-      $CONTROL = 1;
+  if (!isset($_FILES['excel']) || !isset($_FILES['excel']['error']) || $_FILES['excel']['error'] !== UPLOAD_ERR_OK) {
+    $erroresCarga = array(
+      UPLOAD_ERR_INI_SIZE => 'El archivo supera el tamaño máximo permitido por el servidor.',
+      UPLOAD_ERR_FORM_SIZE => 'El archivo supera el tamaño máximo permitido por el formulario.',
+      UPLOAD_ERR_PARTIAL => 'El archivo se recibió de forma incompleta. Intente subirlo nuevamente.',
+      UPLOAD_ERR_NO_FILE => 'No se recibió ningún archivo.',
+      UPLOAD_ERR_NO_TMP_DIR => 'El servidor no tiene disponible el directorio temporal de carga.',
+      UPLOAD_ERR_CANT_WRITE => 'El servidor no pudo guardar el archivo recibido.',
+      UPLOAD_ERR_EXTENSION => 'Una extensión de PHP detuvo la carga del archivo.'
+    );
+    $codigoErrorCarga = isset($_FILES['excel']['error']) ? $_FILES['excel']['error'] : UPLOAD_ERR_NO_FILE;
+    $mensajeImportacion = isset($erroresCarga[$codigoErrorCarga]) ? $erroresCarga[$codigoErrorCarga] : 'Ocurrió un error al recibir el archivo.';
+  } else {
+    $extension = strtolower(pathinfo($_FILES['excel']['name'], PATHINFO_EXTENSION));
+    $extensionesPermitidas = array('xls', 'xlt', 'xlsx', 'xlsm', 'xltx', 'xltm', 'xml', 'ods', 'ots');
+    if (!in_array($extension, $extensionesPermitidas, true)) {
+      $mensajeImportacion = 'Seleccione un archivo Excel (.xls, .xlsx, .xlsm, .xlt, .xltx, .xltm o .xml) o OpenDocument (.ods, .ots).';
+    } else {
+      require_once('Classes/PHPExcel.php');
+      $libxmlErrorSetting = libxml_use_internal_errors(true);
+      try {
+        if (!class_exists('ZipArchive')) {
+          PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
+        }
+        $readerType = PHPExcel_IOFactory::identify($_FILES['excel']['tmp_name']);
+        $lectoresPermitidos = array('Excel5', 'Excel2007', 'Excel2003XML', 'OOCalc');
+        if (!in_array($readerType, $lectoresPermitidos, true)) {
+          $mensajeImportacion = 'El archivo no contiene un libro Excel o OpenDocument compatible. Revise el formato y vuelva a intentarlo.';
+        } else {
+          $objReader = PHPExcel_IOFactory::createReader($readerType);
+          if (!$objReader->canRead($_FILES['excel']['tmp_name'])) {
+            $mensajeImportacion = 'El contenido del archivo no corresponde a un libro Excel u OpenDocument válido. Revise el formato y vuelva a intentarlo.';
+          } else {
+            $objPHPExcel = $objReader->load($_FILES['excel']['tmp_name']);
+            if ($objPHPExcel->getSheetCount() < 1) {
+              $mensajeImportacion = 'El archivo Excel no contiene hojas para importar.';
+            } else {
+              $objPHPExcel->setActiveSheetIndex(0);
+              $ultimaFila = $objPHPExcel->getActiveSheet()->getHighestDataRow();
+              $RUAT = trim(strtoupper((string) $objPHPExcel->getActiveSheet()->getCell('Z1')->getCalculatedValue()));
+              if ($RUAT == 'GREMIAL') {
+                $CONTROL = 1;
+              } else {
+                $mensajeImportacion = 'El archivo Excel no corresponde al formato de Ferias y Mercados: la celda Z1 debe contener GREMIAL.';
+              }
+            }
+          }
+        }
+      } catch (Exception $e) {
+        $mensajeImportacion = 'No se pudo leer el archivo. Compruebe que sea un libro Excel u OpenDocument compatible y que no esté dañado.';
+      }
+      libxml_clear_errors();
+      libxml_use_internal_errors($libxmlErrorSetting);
     }
+  }
+  if ($CONTROL == 1) {
     $GESTIONACTUAL = date('Y');
     $REGS = 0;
     //verifica si LA GESTION EXISTE
@@ -70,7 +119,7 @@ if ($REG == 1) {
       $param = 0;
       $contador = 0;
       $duplicados = 0;
-      while ($param == 0) //mientras el parametro siga en 0 (iniciado antes) que quiere decir que no ha encontrado un NULL entonces siga metiendo datos
+      while ($param == 0 && $i <= $ultimaFila) //Detiene el recorrido al terminar las filas con datos de la hoja.
       {
         if ($objPHPExcel->getActiveSheet()->getCell('A' . $i)->getCalculatedValue() == NULL) //pregunto que si ha encontrado un valor null en una columna inicie un parametro en 1 que indicaria el fin del ciclo while
         {
@@ -112,12 +161,23 @@ if ($REG == 1) {
           //$e_apellido=$objPHPExcel->getActiveSheet()->getCell('G'.$i)->getCalculatedValue();
           //$e_apellido=strtoupper($e_apellido);
 
-          //ASIGNA CODIGO PUESTO
-          $res = mysql_query("select * from nros_correlativos");
-          while ($ro = mysql_fetch_array($res)) {
-            $CODIGO_PUESTO = $ro['NRO_PUESTO'] + 1;
+          //Asigna un correlativo que no exista, incluso si el contador quedó atrasado.
+          $res = mysql_query("select NRO_PUESTO from nros_correlativos") or die("NO SE PUDO LEER EL CORRELATIVO DE PUESTOS: " . mysql_error($conexion_usuarios));
+          $ro = mysql_fetch_array($res);
+          if (!$ro) {
+            die("NO EXISTE EL CORRELATIVO DE PUESTOS EN nros_correlativos.");
           }
-          $query = mysql_query("UPDATE nros_correlativos  SET NRO_PUESTO='$CODIGO_PUESTO'") or die("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_contribuyente.");
+          $CODIGO_PUESTO = (int) $ro['NRO_PUESTO'] + 1;
+          do {
+            $CODIGO_PUESTO_SQL = mysql_real_escape_string((string) $CODIGO_PUESTO, $conexion_usuarios);
+            $resRegistroExistente = mysql_query("select 1 from reg_contribuyente_habilitado_pago where REGISTRO_GREMIAL='$CODIGO_PUESTO_SQL' limit 1") or die("NO SE PUDO VERIFICAR EL CORRELATIVO GREMIAL: " . mysql_error($conexion_usuarios));
+            if (mysql_num_rows($resRegistroExistente) > 0) {
+              $CODIGO_PUESTO++;
+            } else {
+              break;
+            }
+          } while (true);
+          $query = mysql_query("UPDATE nros_correlativos SET NRO_PUESTO='$CODIGO_PUESTO'") or die("NO SE PUDO ACTUALIZAR LOS DATOS DEL correlativo de puestos: " . mysql_error($conexion_usuarios));
           $ci = intval(preg_replace('/[^0-9]+/', '', $ci), 10);
           $CODIGO_CONT = $ci . $ci1 . 'A' . rand(10, 1000);
           $SW = 0;
@@ -183,10 +243,10 @@ if ($REG == 1) {
           if (strlen($ci) < 4) {
             $sql1 = "insert into reg_contribuyente_habilitado_pago(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,CODIGO_CONTRIBUYENTE,CODIGO_ASOCIACION,CODIGO_ZONA,TIPO_VENTA,GESTION,FILA,PUESTO,MONTO,ESTADO,ESTADO_REGISTRO,ESTADO_PAGO,ESTADO_ORDEN_PAGO,COMUNICACION_INTERNA,ENLACE,OBSERVACIONES)
             values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$CODIGO_PUESTO','$CODIGO_CONT','$COD_ASOCIACION','$COD_ZONA','$tipo_puesto','$sltGestion','$fila','$puesto','$MONTO_BS','REGISTRO NO VALIDO NO CUMPLE CON LOS REGISTROS DE CAMPOS REQUERIDOS','REGISTRO NO VALIDO NO CUMPLE CON LOS REGISTROS DE CAMPOS REQUERIDOS','REGISTRO NO VALIDO NO CUMPLE CON LOS REGISTROS DE CAMPOS REQUERIDOS','REGISTRO NO VALIDO NO CUMPLE CON LOS REGISTROS DE CAMPOS REQUERIDOS','REGISTRO NO VALIDO NO CUMPLE CON LOS REGISTROS DE CAMPOS REQUERIDOS','REGISTRO NO VALIDO NO CUMPLE CON LOS REGISTROS DE CAMPOS REQUERIDOS','REGISTRO NO VALIDO NO CUMPLE CON LOS REGISTROS DE CAMPOS REQUERIDOS')";
-            $result = mysql_query($sql1) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_habilitado_pago.");
+            $result = mysql_query($sql1) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_habilitado_pago. Fila Excel: " . $i . ". Error MySQL: " . mysql_error($conexion_usuarios));
           } else {
             $sql1 = "insert into reg_contribuyente_habilitado_pago(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,REGISTRO_GREMIAL,CODIGO_CONTRIBUYENTE,CODIGO_ASOCIACION,CODIGO_ZONA,TIPO_VENTA,GESTION,FILA,PUESTO,MONTO,COMUNICACION_INTERNA)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$CODIGO_PUESTO','$CODIGO_CONT','$COD_ASOCIACION','$COD_ZONA','$tipo_puesto','$sltGestion','$fila','$puesto','$MONTO_BS','NO GENERADO')";
-            $result = mysql_query($sql1) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_habilitado_pago.");
+            $result = mysql_query($sql1) or die("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_habilitado_pago. Fila Excel: " . $i . ". Error MySQL: " . mysql_error($conexion_usuarios));
           }
           //}
 
@@ -198,14 +258,12 @@ if ($REG == 1) {
         }
       }
       $totalIngresados = $contador; //(porque se se para con un NULL y le esta registrando como que tambien un dato)
-      unlink($destino); //desenlazar a destino el lugar donde salen los datos(archivo)
       $query = mysql_query("UPDATE reg_contribuyente_habilitado_pago  SET TIPO_VENTA='KIOSCO',MONTO='60'  where CODIGO_REGISTRO='$COD_REGISTRO' and TIPO_VENTA like '%KIOSKO%' and ESTADO='ACTIVO' and ESTADO_PAGO='NO PAGO'") or die("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_contribuyente_habilitado_pago.");
       $query = mysql_query("UPDATE reg_contribuyente_habilitado_pago  SET TIPO_VENTA='KIOSCO',MONTO='60'  where CODIGO_REGISTRO='$COD_REGISTRO' and TIPO_VENTA like '%KIOS%' and ESTADO='ACTIVO' and ESTADO_PAGO='NO PAGO'") or die("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_contribuyente_habilitado_pago.");
     }
   }
 } else {
-  echo "<script>alert('El Archivo no tiene el formato adecuado.')</script>";
-  unlink($destino); //desenlazar a destino el lugar donde salen los datos(archivo)
+  $mensajeImportacion = 'La solicitud de importación está incompleta. Seleccione nuevamente el archivo.';
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -272,7 +330,7 @@ if ($REG == 1) {
 
           echo "<script>alert(' ( $totales ) Contribuyente(s) Importados Con Exito.')</script>";
         } else {
-          echo "<script>alert('El Archivo no tiene el formato adecuado.')</script>";
+          echo "<script>alert(" . json_encode($mensajeImportacion) . ");</script>";
           echo "<script> location.href='frmImpMasExcelFerias.php';</script>";
         }
         function normaliza($cadena)

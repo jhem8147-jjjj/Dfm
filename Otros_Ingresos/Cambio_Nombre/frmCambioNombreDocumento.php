@@ -1,12 +1,27 @@
 <?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
-require_once('../Control_Sesiones_Forms/Loading.php'); 
+header('Content-Type: text/html; charset=utf-8');
 require '../Conexion_BD/Dbms.php';
-$COD_REGISTRO=date('Ymd His').rand(1,10);
-$_SESSION['COD_REGISTRO']=$COD_REGISTRO;
-if(empty($_SESSION['COD_ASOCIACION'])){include_once("Index.php");}
-if(empty($_SESSION['ASOCIACION'])){include_once("Index.php");}
-if(empty($_SESSION['OMS'])){include_once("Index.php");}
-if(empty($_SESSION['COD_REGISTRO'])){include_once("Index.php");}
+$COD_REGISTRO = isset($_SESSION['COD_REGISTRO']) ? $_SESSION['COD_REGISTRO'] : '';
+$COD_ASOCIACION = isset($_SESSION['COD_ASOCIACION']) ? $_SESSION['COD_ASOCIACION'] : '';
+$ASOCIACION = isset($_SESSION['ASOCIACION']) ? $_SESSION['ASOCIACION'] : '';
+$OMS = isset($_SESSION['OMS']) ? $_SESSION['OMS'] : '';
+if ($COD_ASOCIACION === '' || $ASOCIACION === '' || $OMS === '') {
+    header('Location: frmCambioNombre.php');
+    exit;
+}
+if ($COD_REGISTRO === '') {
+    $COD_REGISTRO = date('Ymd His').rand(1, 10);
+    $_SESSION['COD_REGISTRO'] = $COD_REGISTRO;
+}
+$COD_ASOCIACION_SQL = mysql_real_escape_string($COD_ASOCIACION);
+$zonas = array();
+$liqui = mysql_query("select ZT.DESCRIPCION,ZT.CODIGO_ZONA from zona_tributaria ZT,reg_asociacion_zona_tributaria RAZT where RAZT.CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' and RAZT.CODIGO_ZONA=ZT.CODIGO_ZONA and RAZT.ESTADO='ACTIVO' and ZT.ESTADO='ACTIVO'") or die("NO SE PUDO CONSULTAR LA ZONA TRIBUTARIA DE LA ASOCIACION.");
+while ($rowt = mysql_fetch_array($liqui)) {
+    $zonas[] = $rowt['DESCRIPCION'];
+    $_SESSION['CODIGO_ZONA_TRIB'] = $rowt['CODIGO_ZONA'];
+}
+require_once('../Control_Sesiones_Forms/Loading.php');
+$gestionDocumento = date('Y') - 1;
 $cont=0;
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -32,22 +47,22 @@ $cont=0;
     <td style="font-weight: bold"><img src="../Img/Linea.png" width="700" height="4" /></td>
   </tr>
   <tr>
-    <td><form method="post" action="frmCambioNombre1.php"><table width="100%" border="0" cellpadding="1" cellspacing="1" bordercolor="#FFFFFF">
+    <td><form method="post" accept-charset="UTF-8" action="frmCambioNombre1.php"><table width="100%" border="0" cellpadding="1" cellspacing="1" bordercolor="#FFFFFF">
       <tr>
         <td height="32" align="right" bgcolor="#CCCCCC">Documento de Registro :</td>
-        <td style="font-weight: bold"><?php echo $OMS;?></td>
+        <td style="font-weight: bold"><?php echo htmlspecialchars(str_replace("Â°", "°", $OMS), ENT_QUOTES, 'UTF-8');?></td>
       </tr>
       <tr>
         <td width="28%" height="32" align="right" bgcolor="#CCCCCC">Asociación Seleccionada :</td>
-        <td width="72%" style="font-weight: bold"><?php echo utf8_decode($ASOCIACION);?>
-          <input name="COD_ASOCIACION" type="hidden" id="COD_ASOCIACION" value="<?php echo $COD_ASOCIACION;?>" />
-          <input name="ASOCIACION" type="hidden" id="ASOCIACION" value="<?php echo utf8_decode($ASOCIACION);?>" />
+        <td width="72%" style="font-weight: bold"><?php echo htmlspecialchars($ASOCIACION, ENT_QUOTES, 'UTF-8');?>
+          <input name="COD_ASOCIACION" type="hidden" id="COD_ASOCIACION" value="<?php echo htmlspecialchars($COD_ASOCIACION, ENT_QUOTES, 'UTF-8');?>" />
+          <input name="ASOCIACION" type="hidden" id="ASOCIACION" value="<?php echo htmlspecialchars($ASOCIACION, ENT_QUOTES, 'UTF-8');?>" />
           <input name="REG" type="hidden" id="REG" value="1" /></td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC">Zona Tributaria :</td>
         <td style="font-weight: bold; font-size: 14px;"><span style="font-weight: bold">
-          <?php $liqui=mysql_query("select ZT.DESCRIPCION,ZT.CODIGO_ZONA from zona_tributaria ZT,reg_asociacion_zona_tributaria RAZT where RAZT.CODIGO_ASOCIACION='$COD_ASOCIACION' and RAZT.CODIGO_ZONA=ZT.CODIGO_ZONA and RAZT.ESTADO='ACTIVO' and ZT.ESTADO='ACTIVO'");while($rowt=mysql_fetch_array($liqui)){ echo $rowt[0]; $ZONA_TRIB=$rowt[0];  $CODIGO_ZONA_TRIB=$rowt[1];} ?>
+          <?php echo htmlspecialchars(implode(', ', $zonas), ENT_QUOTES, 'UTF-8'); ?>
         </span></td>
       </tr>
       <tr>
@@ -58,13 +73,15 @@ $cont=0;
         </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Gestión :</td>
-        <td style="font-weight: bold; font-size: 14px;"><select name="sltGestion" id="sltGestion">
-          <option><?php echo date('Y')-1;?></option>
-        </select></td>
+        <td style="font-weight: bold; font-size: 14px;"><select id="gestionDocumento" disabled="disabled">
+          <option><?php echo $gestionDocumento;?></option>
+        </select>
+          <input type="hidden" name="sltGestion" value="<?php echo $gestionDocumento;?>" />
+          <span style="font-size: 12px; font-weight: normal">Se asigna automáticamente al año anterior; no es necesario elegirla.</span></td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Documento :</td>
-        <td style="font-weight: bold; font-size: 14px;"><input name="txtDocumento" type="text" id="txtDocumento" onchange="javascript:this.value=this.value.toUpperCase();" onkeypress="return soloNumAlfSig(event)" placeholder="Nro. de DOCUMENTO" onkeyup="return fileValidation();" required/>
+        <td style="font-weight: bold; font-size: 14px;"><input name="txtDocumento" type="text" id="txtDocumento" onchange="javascript:this.value=this.value.toUpperCase();" placeholder="Nro. de DOCUMENTO" onkeyup="return fileValidation();" required/>
           <input name="txtCodigoRegistro" type="hidden" id="txtCodigoRegistro" value="<?php echo date('Ymd His').rand(100,1000);?>" /></td>
       </tr>
       <tr>
@@ -73,7 +90,7 @@ $cont=0;
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC">Observaciones :</td>
-        <td style="font-weight: bold; font-size: 14px;"><textarea name="txtObservaciones" id="txtObservaciones" onchange="javascript:this.value=this.value.toUpperCase();" onkeypress="return soloNumAlfSig(event)" cols="45" rows="5">NINGUNA OBSERVACION.</textarea></td>
+        <td style="font-weight: bold; font-size: 14px;"><textarea name="txtObservaciones" id="txtObservaciones" onchange="javascript:this.value=this.value.toUpperCase();" cols="45" rows="5">NINGUNA OBSERVACION.</textarea></td>
       </tr>
       <tr>
         <td align="right">&nbsp;</td>

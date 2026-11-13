@@ -78,7 +78,7 @@ $conts = 0;
             <td align="center" bgcolor="#CCCCCC" style="font-weight: bold">COMUNICACION INTERNA</td>
             <td align="center" bgcolor="#CCCCCC" style="font-weight: bold">CANTIDAD</td>
             <td align="center">&nbsp;</td>
-          </tr><?php $res = mysql_query("select DISTINCT CODIGO_REGISTRO,USUARIO,NOMBRE_USUARIO,FECHA,COMUNICACION_INTERNA  from reg_contribuyente_habilitado_pago_cambio_nombre where CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO' and ESTADO_PAGO='NO PAGO' AND ESTADO_COMUNICACION_INTERNA='GENERADO' and ESTADO_ORDEN_PAGO='GENERADO'");
+          </tr><?php $res = mysql_query("select CODIGO_REGISTRO,USUARIO,NOMBRE_USUARIO,FECHA,COMUNICACION_INTERNA,COUNT(*) AS TOTAL from reg_contribuyente_habilitado_pago_cambio_nombre where CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO' and ESTADO_PAGO='NO PAGO' AND ESTADO_COMUNICACION_INTERNA='GENERADO' and ESTADO_ORDEN_PAGO='GENERADO' group by CODIGO_REGISTRO,USUARIO,NOMBRE_USUARIO,FECHA,COMUNICACION_INTERNA");
                 while ($row = mysql_fetch_array($res)) { ?>
             <tr>
               <td bgcolor="#F3F3F3"><?php $cont++;
@@ -86,10 +86,7 @@ $conts = 0;
               <td bgcolor="#F3F3F3"><?php echo $row['3']; ?></td>
               <td bgcolor="#F3F3F3"><?php echo $row['1'] . ' - ' . $row['2']; ?></td>
               <td bgcolor="#F3F3F3"><?php echo $row['4']; ?></td>
-              <td bgcolor="#F3F3F3"><?PHP $rest = mysql_query("select COUNT(CODIGO_REGISTRO) from reg_contribuyente_habilitado_pago_cambio_nombre where CODIGO_REGISTRO='$row[0]' and CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO' AND ESTADO_COMUNICACION_INTERNA='GENERADO' and ESTADO_ORDEN_PAGO='GENERADO'");
-                                    while ($rowt = mysql_fetch_array($rest)) {
-                                      echo '( ' . $rowt[0] . ' ) REGISTROS.';
-                                    } ?></td>
+              <td bgcolor="#F3F3F3"><?php echo '( ' . $row['TOTAL'] . ' ) REGISTROS.'; ?></td>
               <td><a href="frmEmisionCP2.php?CN=1&COM_INT=<?php echo $row['4']; ?>&CODIGOREGISTRO=<?php echo $row['0']; ?>">Seleccionar</a></td>
             </tr><?php }
                 if ($cont == 0) { ?>
@@ -121,7 +118,7 @@ $conts = 0;
             <td align="center" bgcolor="#CCCCCC" style="font-weight: bold">CANTIDAD</td>
             <td align="center">&nbsp;</td>
           </tr>
-          <?php $res = mysql_query("select DISTINCT CODIGO_REGISTRO,USUARIO,NOMBRE_USUARIO,FECHA,COMUNICACION_INTERNA  from reg_contribuyente_habilitado_pago_complementacion where CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO' and ESTADO_PAGO='NO PAGO' AND ESTADO_COMUNICACION_INTERNA='GENERADO' and ESTADO_ORDEN_PAGO='GENERADO'");
+          <?php $res = mysql_query("select CODIGO_REGISTRO,USUARIO,NOMBRE_USUARIO,FECHA,COMUNICACION_INTERNA,COUNT(*) AS TOTAL from reg_contribuyente_habilitado_pago_complementacion where CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO' and ESTADO_PAGO='NO PAGO' AND ESTADO_COMUNICACION_INTERNA='GENERADO' and ESTADO_ORDEN_PAGO='GENERADO' group by CODIGO_REGISTRO,USUARIO,NOMBRE_USUARIO,FECHA,COMUNICACION_INTERNA");
           while ($row = mysql_fetch_array($res)) { ?>
             <tr>
               <td bgcolor="#F3F3F3"><?php $conts++;
@@ -129,10 +126,7 @@ $conts = 0;
               <td bgcolor="#F3F3F3"><?php echo $row['3']; ?></td>
               <td bgcolor="#F3F3F3"><?php echo $row['1'] . ' - ' . $row['2']; ?></td>
               <td bgcolor="#F3F3F3"><?php echo $row['4']; ?></td>
-              <td bgcolor="#F3F3F3"><?PHP $rest = mysql_query("select COUNT(*) from reg_contribuyente_habilitado_pago_complementacion where CODIGO_REGISTRO='$row[0]' and CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO' and ESTADO_PAGO='NO PAGO' AND ESTADO_COMUNICACION_INTERNA='GENERADO' and ESTADO_ORDEN_PAGO='GENERADO'");
-                                    while ($rowt = mysql_fetch_array($rest)) {
-                                      echo '( ' . $rowt[0] . ' ) REGISTROS.';
-                                    } ?></td>
+              <td bgcolor="#F3F3F3"><?php echo '( ' . $row['TOTAL'] . ' ) REGISTROS.'; ?></td>
               <td><a href="frmEmisionCP2.php?CC=1&COM_INT=<?php echo $row['4']; ?>&CODIGOREGISTRO=<?php echo $row['0']; ?>">Seleccionar</a></td>
             </tr> <?php }
                 if ($conts == 0) { ?>

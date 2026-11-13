@@ -2,6 +2,7 @@
 require 'frmControlSesion.php';
 require_once('../Control_Sesiones_Forms/Loading.php'); 
 require '../Conexion_BD/Dbms.php';
+mysql_set_charset("utf8", $conexion_usuarios) or die("NO SE PUDO CONFIGURAR LA CONEXION UTF-8: " . mysql_error($conexion_usuarios));
 if($txtSw==1){
 $COD_ASOC=date('Ymd His');
 //copia archivo pdf o.m.
@@ -35,6 +36,20 @@ $txtDescripcion=normaliza($txtDescripcion);
 $txtZona=normaliza($txtZona);
 $txtDireccion=normaliza($txtDireccion);
 $txtObservacion=normaliza($txtObservacion);
+$txtCarpeta=mysql_real_escape_string($txtCarpeta, $conexion_usuarios);
+$txtDescripcion=mysql_real_escape_string($txtDescripcion, $conexion_usuarios);
+$txtOrdenanzaMunicipal=mysql_real_escape_string($txtOrdenanzaMunicipal, $conexion_usuarios);
+$txtZona=mysql_real_escape_string($txtZona, $conexion_usuarios);
+$txtDireccion=mysql_real_escape_string($txtDireccion, $conexion_usuarios);
+$txtObservacion=mysql_real_escape_string($txtObservacion, $conexion_usuarios);
+$NOMBRE_ARCHIVO=mysql_real_escape_string($NOMBRE_ARCHIVO, $conexion_usuarios);
+$sltZonaTributaria=mysql_real_escape_string($sltZonaTributaria, $conexion_usuarios);
+$US_SIOI=mysql_real_escape_string($US_SIOI, $conexion_usuarios);
+$SIAUNOMBRES=mysql_real_escape_string($SIAUNOMBRES, $conexion_usuarios);
+$USPRIMERAPELLIDO=mysql_real_escape_string($USPRIMERAPELLIDO, $conexion_usuarios);
+$SIAUSEGUNDOAPELLIDO=mysql_real_escape_string($SIAUSEGUNDOAPELLIDO, $conexion_usuarios);
+$hostname=mysql_real_escape_string($hostname, $conexion_usuarios);
+$hostlocal=mysql_real_escape_string($hostlocal, $conexion_usuarios);
 $res=mysql_query("select * from nros_correlativos");while($ro=mysql_fetch_array($res)){
 $CODIGO_NRO=$ro['NRO_ASOCIACION']+1;
 }
@@ -125,9 +140,9 @@ body,td,th {
       <?php $result=mysql_query("select ASOC.ORDENANZA_MUNICIPAL,ASOC.DESCRIPCION,ASOC.ARCHIVO,ASOC.AFILIADOS,ZT.DESCRIPCION,ASOC.CODIGO_ASOCIACION,ASOC.ZONA_UBICACION from reg_asociacion ASOC, zona_tributaria ZT, reg_asociacion_zona_tributaria ASOCZT where ASOC.ESTADO='ACTIVO' and ZT.ESTADO='ACTIVO' and ASOCZT.ESTADO='ACTIVO' and ASOCZT.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION  and ASOCZT.CODIGO_ZONA=ZT.CODIGO_ZONA order by ASOC.DESCRIPCION"); while($row=mysql_fetch_array($result)){ ?>
       <tr>
         <td><?php $CONT++; echo $CONT; ?></td>
-        <td><?php echo $row[0]; ?></td>
-        <td><?php echo utf8_decode($row[1]); ?></td>
-        <td><?php echo utf8_decode($row[6]); ?></td>
+        <td><?php echo htmlspecialchars(str_replace("Â°", "°", $row[0]), ENT_QUOTES, 'UTF-8'); ?></td>
+        <td><?php echo $row[1]; ?></td>
+        <td><?php echo $row[6]; ?></td>
         <td><table width="100%" border="1" cellpadding="1" cellspacing="1">
          <?php $res=mysql_query("select * from reg_asociacion_puesto where CODIGO_ASOCIACION='$row[5]' and ESTADO='ACTIVO' order by DESCRIPCION"); while($rows=mysql_fetch_array($res)){ ?>  <tr>
             <td align="right" bgcolor="#E3F0F2"><?php echo $rows['DESCRIPCION']; ?></td>
@@ -162,12 +177,5 @@ body,td,th {
 </html><?php require '../Conexion_BD/Cerrar_Dbms.php';
 
 function normaliza ($cadena){
-    $originales = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ
-ßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ"';
-    $modificadas = 'aaaaaaaceeeeiiiidnoooooouuuuy
-bsaaaaaaaceeeeiiiidnoooooouuuyybyRr ';
-    $cadena = utf8_decode($cadena);
-    $cadena = strtr($cadena, utf8_decode($originales), $modificadas);
-    $cadena = strtoupper($cadena);
-    return utf8_encode($cadena);
-}?>
+    return mb_strtoupper($cadena, 'UTF-8');
+}?> 

@@ -1,4 +1,5 @@
-<?php 
+<?php
+header('Content-Type: text/html; charset=UTF-8');
 require '../Conex_Dbms/Dbms.php';
 //Recogemos la cadena
 $busqueda=$_POST['cadena'];

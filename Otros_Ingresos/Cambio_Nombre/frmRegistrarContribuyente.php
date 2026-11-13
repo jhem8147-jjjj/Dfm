@@ -1,10 +1,32 @@
 <?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
+header('Content-Type: text/html; charset=utf-8');
 require_once('../Control_Sesiones_Forms/Loading.php'); 
 require '../Conexion_BD/Dbms.php';
+function cambioNombreRequestValue($name)
+{
+    if (isset($_POST[$name]) && is_scalar($_POST[$name])) {
+        return (string) $_POST[$name];
+    }
+    if (isset($_GET[$name]) && is_scalar($_GET[$name])) {
+        return (string) $_GET[$name];
+    }
+    return '';
+}
+$REG = cambioNombreRequestValue('REG');
+$txtNroCi = trim(cambioNombreRequestValue('txtNroCi'));
+$txtNroCiAl = trim(cambioNombreRequestValue('txtNroCiAl'));
+$sltExpedido = cambioNombreRequestValue('sltExpedido');
+$sltDocumento = cambioNombreRequestValue('sltDocumento');
+$txtNombres = trim(cambioNombreRequestValue('txtNombres'));
+$txtPapellido = trim(cambioNombreRequestValue('txtPapellido'));
+$txtSapellido = trim(cambioNombreRequestValue('txtSapellido'));
+$txtApellidoEsposo = trim(cambioNombreRequestValue('txtApellidoEsposo'));
 if($REG==1){
 //busca si el c.i. esta registrado
 $EXISTE=0;
-$result=mysql_query("select * from contribuyentes where DOC_IDENTIDAD='$txtNroCi' and DOC_IDENTIDAD_ALFA='$txtNroCiAl' and ESTADO='ACTIVO'"); while($row=mysql_fetch_array($result)){$EXISTE=1;}
+$txtNroCi_SQL = mysql_real_escape_string($txtNroCi);
+$txtNroCiAl_SQL = mysql_real_escape_string($txtNroCiAl);
+$result=mysql_query("select * from contribuyentes where DOC_IDENTIDAD='$txtNroCi_SQL' and DOC_IDENTIDAD_ALFA='$txtNroCiAl_SQL' and ESTADO='ACTIVO'"); while($row=mysql_fetch_array($result)){$EXISTE=1;}
 if($EXISTE==0){
 $CODIGOS_REGISTROS=date('Ymd His').rand(1,10);
 $CODIGOS_CONTRIBUYENTES='CN'.$txtNroCi.$txtNroCiAl.rand(1,10);
@@ -16,11 +38,22 @@ $txtSapellido=normaliza($txtSapellido);
 $txtSapellido=trim($txtSapellido);
 $txtApellidoEsposo=normaliza($txtApellidoEsposo);
 $txtApellidoEsposo=trim($txtApellidoEsposo);
-$sql1="insert into contribuyentes(CODIGO_REGISTRO,CODIGO_CONTRIBUYENTE,DOC_IDENTIDAD,DOC_IDENTIDAD_ALFA,EXPEDIDO,TIPO_DOCUMENTO,NOMBRE_RSOCIAL,PRIMER_APELLIDO,SEGUNDO_APELLIDO,APELLIDO_ESPOSO)values('$CODIGOS_REGISTROS','$CODIGOS_CONTRIBUYENTES','$txtNroCi','$txtNroCiAl','$sltExpedido','$sltDocumento','$txtNombres','$txtPapellido','$txtSapellido','$txtApellidoEsposo')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente.");
+$txtNombres_SQL = mysql_real_escape_string($txtNombres);
+$txtPapellido_SQL = mysql_real_escape_string($txtPapellido);
+$txtSapellido_SQL = mysql_real_escape_string($txtSapellido);
+$txtApellidoEsposo_SQL = mysql_real_escape_string($txtApellidoEsposo);
+$sltExpedido_SQL = mysql_real_escape_string($sltExpedido);
+$sltDocumento_SQL = mysql_real_escape_string($sltDocumento);
+$CODIGOS_REGISTROS_SQL = mysql_real_escape_string($CODIGOS_REGISTROS);
+$CODIGOS_CONTRIBUYENTES_SQL = mysql_real_escape_string($CODIGOS_CONTRIBUYENTES);
+$NOMBRE_USUARIO_SQL = mysql_real_escape_string("$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO");
+$US_SIOI_SQL = mysql_real_escape_string($US_SIOI);
+$sql1="insert into contribuyentes(CODIGO_REGISTRO,CODIGO_CONTRIBUYENTE,DOC_IDENTIDAD,DOC_IDENTIDAD_ALFA,EXPEDIDO,TIPO_DOCUMENTO,NOMBRE_RSOCIAL,PRIMER_APELLIDO,SEGUNDO_APELLIDO,APELLIDO_ESPOSO)values('$CODIGOS_REGISTROS_SQL','$CODIGOS_CONTRIBUYENTES_SQL','$txtNroCi_SQL','$txtNroCiAl_SQL','$sltExpedido_SQL','$sltDocumento_SQL','$txtNombres_SQL','$txtPapellido_SQL','$txtSapellido_SQL','$txtApellidoEsposo_SQL')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente.");
 
-$sql1="insert into reg_contribuyente(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_CONTRIBUYENTE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$CODIGOS_REGISTROS','$CODIGOS_CONTRIBUYENTES')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente.");
+$sql1="insert into reg_contribuyente(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_CONTRIBUYENTE)values('$hostname','$hostlocal','$US_SIOI_SQL','$NOMBRE_USUARIO_SQL','$FECHA','$HORA','$CODIGOS_REGISTROS_SQL','$CODIGOS_CONTRIBUYENTES_SQL')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente.");
 
-$sql1="insert into reg_contribuyente_transacciones(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,TRANSACCION_1,DESCRIPCION_TRAMITE,OBSERVACIONES,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$CODIGOS_REGISTROS','NO DEFINIDO','NO DEFINIDO','REGISTRO CONTRIBUYENTE NUEVO','REGISTRO DE CONTRIBUYENTE NUEVO - $txtNroCi $txtNroCiAl $sltExpedido $txtNombres $txtPapellido $txtSapellido.','REGISTRO DE CONTRIBUYENTE NUEVO - $txtNroCi $txtNroCiAl $sltExpedido $txtNombres $txtPapellido $txtSapellido.','1')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones."); 
+$descripcion = mysql_real_escape_string("REGISTRO DE CONTRIBUYENTE NUEVO - $txtNroCi $txtNroCiAl $sltExpedido $txtNombres $txtPapellido $txtSapellido.");
+$sql1="insert into reg_contribuyente_transacciones(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,TRANSACCION_1,DESCRIPCION_TRAMITE,OBSERVACIONES,ENLACE)values('$hostname','$hostlocal','$US_SIOI_SQL','$NOMBRE_USUARIO_SQL','$FECHA','$HORA','$CODIGOS_REGISTROS_SQL','NO DEFINIDO','NO DEFINIDO','REGISTRO CONTRIBUYENTE NUEVO','$descripcion','$descripcion','1')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones."); 
 echo"<script> alert('Se Registró los datos del Nuevo Contribuyente.');</script>";	
 echo"<script> location.href='frmCambioNombre2.php';</script>";
 	}else{
@@ -91,19 +124,19 @@ echo"<script> location.href='frmCambioNombre2.php';</script>";
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Nombre(s) :</td>
-        <td style="font-weight: bold"><input name="txtNombres" type="text" id="txtNombres"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();" placeholder="NOMBRE(S)" onKeyPress="return soloLetras(event)" onkeyup="return fileRegValidation()" required/></td>
+        <td style="font-weight: bold"><input name="txtNombres" type="text" id="txtNombres"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();" placeholder="NOMBRE(S)" onkeyup="return fileRegValidation()" required/></td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Primer Apellido :</td>
-        <td style="font-weight: bold"><input name="txtPapellido" type="text" id="txtPapellido"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();"  onKeyPress="return soloLetras(event)" onkeyup="return fileRegValidation()" placeholder="PRIMER APELLIDO" required="required"/></td>
+        <td style="font-weight: bold"><input name="txtPapellido" type="text" id="txtPapellido"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileRegValidation()" placeholder="PRIMER APELLIDO" required="required"/></td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC">Segundo Apellido :</td>
-        <td style="font-weight: bold"><input name="txtSapellido" type="text" id="txtSapellido"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();"  onkeypress="return soloLetras(event)" placeholder="SEGUNDO APELLIDO"/></td>
+        <td style="font-weight: bold"><input name="txtSapellido" type="text" id="txtSapellido"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();" placeholder="SEGUNDO APELLIDO"/></td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC">Apellido Esposo</td>
-        <td style="font-weight: bold"><input name="txtApellidoEsposo" type="text" id="txtApellidoEsposo"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();"  onkeypress="return soloLetras(event)" placeholder="APELLIDO ESPOSO"/></td>
+        <td style="font-weight: bold"><input name="txtApellidoEsposo" type="text" id="txtApellidoEsposo"  style="width:250px; height:20px" onchange="javascript:this.value=this.value.toUpperCase();" placeholder="APELLIDO ESPOSO"/></td>
       </tr>
       <tr>
         <td align="right"><img src="../Img/Blanco.png" width="300" height="1" /></td>
@@ -138,13 +171,6 @@ echo"<script> location.href='frmCambioNombre2.php';</script>";
 </html><?php 
 
 function normaliza ($cadena){
-    $originales = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ
-ßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿŔŕ';
-    $modificadas = 'aaaaaaaceeeeiiiidnoooooouuuuy
-bsaaaaaaaceeeeiiiidnoooooouuuyybyRr';
-    $cadena = utf8_decode($cadena);
-    $cadena = strtr($cadena, utf8_decode($originales), $modificadas);
-    $cadena = strtoupper($cadena);
-    return utf8_encode($cadena);
+    return mb_strtoupper($cadena, 'UTF-8');
 }
 require '../Conexion_BD/Cerrar_Dbms.php';?>

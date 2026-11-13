@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: text/html; charset=UTF-8');
 session_start();
 $_SESSION=array();
 if(ini_get("session.use_cookies")){
@@ -7,11 +8,11 @@ setcookie(session_name(),'',time()-42000,
 $params["path"], $params["domain"],
 $params["secure"], $params["httponly"]);
 }
-session_destroy(); // destruyo la sesión 
+session_destroy(); // Destroy the session.
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Documento sin t&iacute;tulo</title>
 <script type="text/JavaScript">
 <!--

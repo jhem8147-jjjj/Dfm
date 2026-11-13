@@ -2,6 +2,18 @@
 require_once('../Control_Sesiones_Forms/Loading.php');
 require '../Conexion_BD/Dbms.php';
 unset($_SESSION['CODIGO_REGISTRO']);
+$CONTS = 0;
+$CONTTS = 0;
+if (!isset($_GET['COD_ASOCIACION']) || !isset($_GET['ASOCIACION'])) {
+  die('FALTAN LOS DATOS DE LA ASOCIACION SELECCIONADA.');
+}
+$COD_ASOCIACION = trim($_GET['COD_ASOCIACION']);
+$ASOCIACION = trim($_GET['ASOCIACION']);
+$OMS = isset($_GET['OMS']) ? trim($_GET['OMS']) : '';
+if ($COD_ASOCIACION === '') {
+  die('EL CODIGO DE ASOCIACION NO ES VALIDO.');
+}
+$COD_ASOCIACION_SQL = mysql_real_escape_string($COD_ASOCIACION);
 $_SESSION['COD_ASOCIACION'] = $COD_ASOCIACION;
 $_SESSION['ASOCIACION'] = $ASOCIACION;
 $_SESSION['OMS'] = $OMS;
@@ -9,7 +21,7 @@ $_SESSION['OMS'] = $OMS;
 $SWSEC = 0;
 // VERIFICA DATOS DEL SECRETARIO GENERAL
 $GESTION_SEC = date('Y') - 1;
-$resultY = mysql_query("select * from reg_secretario_general_asociacion RSG where RSG.CODIGO_ASOCIACION='$COD_ASOCIACION' 
+$resultY = mysql_query("select * from reg_secretario_general_asociacion RSG where RSG.CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' 
                         and RSG.GESTION='$GESTION_SEC' and RSG.ESTADO='ACTIVO'");
 while ($rowY = mysql_fetch_array($resultY)) {
   $SWSEC = 1;
@@ -42,7 +54,7 @@ while ($rowY = mysql_fetch_array($resultY)) {
     <tr>
       <td>
         <table width="100%" border="0" cellpadding="1" cellspacing="1" bordercolor="#FFFFFF">
-          <?php $result = mysql_query("select * from reg_asociacion where CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO'");
+          <?php $result = mysql_query("select * from reg_asociacion where CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' and ESTADO='ACTIVO'");
           while ($row = mysql_fetch_array($result)) { ?> <tr>
               <td height="32" align="right" bgcolor="#CCCCCC">Documento de Registro :</td>
               <td style="font-weight: bold"><?php echo utf8_decode($row['ORDENANZA_MUNICIPAL']); ?></td>
@@ -57,7 +69,7 @@ while ($rowY = mysql_fetch_array($resultY)) {
               <td height="32" align="right" bgcolor="#CCCCCC">Zona Tributaria :</td>
               <td style="font-weight: bold"> 
                 <?php $liqui = mysql_query("select ZT.DESCRIPCION from zona_tributaria ZT,reg_asociacion_zona_tributaria RAZT 
-                          where RAZT.CODIGO_ASOCIACION='$COD_ASOCIACION' 
+                          where RAZT.CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' 
                           and RAZT.CODIGO_ZONA=ZT.CODIGO_ZONA 
                           and RAZT.ESTADO='ACTIVO' 
                           and ZT.ESTADO='ACTIVO'");
@@ -97,7 +109,7 @@ while ($rowY = mysql_fetch_array($resultY)) {
           <?php $res = mysql_query("
                         select distinct(CODIGO_REGISTRO),FECHA,GESTION,ESTADO_PAGO,USUARIO,NOMBRE_USUARIO,COMUNICACION_INTERNA,ENLACE 
                         from reg_contribuyente_habilitado_pago_complementacion 
-                        where CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO'");
+                        where CODIGO_ASOCIACION='" . mysql_real_escape_string($COD_ASOCIACION) . "' and ESTADO='ACTIVO'");
           while ($row = mysql_fetch_array($res)) { ?>
             <tr>
               <td height="23" bgcolor="#EBDBD6"><?php $CONTS++;
@@ -106,9 +118,9 @@ while ($rowY = mysql_fetch_array($resultY)) {
               <td bgcolor="#EBDBD6"><?php echo $row[4] . ' - ' . $row[5]; ?></td>
               <td bgcolor="#EBDBD6"><?php echo $row[2]; ?></td>
               <td bgcolor="#EBDBD6"><?php echo $row[3] . ' - POR COMPLEMENTO DE CONTRIBUYENTES'; ?></td>
-              <td bgcolor="#EBDBD6"><a href="../Complemento_Contribuyentes/Pdf_Complementos/frmGenerarNominaSinComInt.php" target="_new"><?php echo $row[6]; ?></a></td>
+              <td bgcolor="#EBDBD6"><?php if ($row[6] !== 'NO GENERADO' && preg_match('/^[0-9]{4}\/[A-Za-z0-9_-]+$/', $row[7])) { $rutaDocumento = dirname(__FILE__) . '/../Complemento_Contribuyentes/Pdf_Complementos/generated/' . $row[7]; $extensionDocumento = is_file($rutaDocumento . '.docx') ? 'docx' : (is_file($rutaDocumento . '.pdf') ? 'pdf' : 'doc'); ?><a href="../Complemento_Contribuyentes/Pdf_Complementos/generated/<?php echo htmlspecialchars($row[7], ENT_QUOTES, 'UTF-8'); ?>.<?php echo $extensionDocumento; ?>" target="_blank"><?php echo htmlspecialchars($row[6], ENT_QUOTES, 'UTF-8'); ?></a><?php } else { echo htmlspecialchars($row[6], ENT_QUOTES, 'UTF-8'); } ?></td>
               <td>&nbsp;</td>
-              <td><a href="frmEliminarCi_CN_CC2.php?GESTIONSELECIONADA=<?php echo $row[2]; ?>&CC=1&CODIGO_REGISTRO=<?php echo $row[0]; ?>">Eliminar Registros</a></td>
+              <td><a href="frmEliminarCi_CN_CC2.php?GESTIONSELECIONADA=<?php echo rawurlencode($row[2]); ?>&CC=1&CODIGO_REGISTRO=<?php echo rawurlencode($row[0]); ?>&COD_ASOCIACION=<?php echo rawurlencode($COD_ASOCIACION); ?>">Eliminar Registros</a></td>
             </tr>
           <?php }
           if ($CONTS == 0) { ?>
@@ -143,7 +155,7 @@ while ($rowY = mysql_fetch_array($resultY)) {
             <td align="center" style="font-weight: bold; font-size: 12px;">&nbsp;</td>
             <td align="center" style="font-weight: bold; font-size: 12px;">&nbsp;</td>
           </tr>
-          <?php $res = mysql_query("select distinct(CODIGO_REGISTRO),FECHA,GESTION,ESTADO_PAGO,USUARIO,NOMBRE_USUARIO,COMUNICACION_INTERNA,ENLACE from reg_contribuyente_habilitado_pago_cambio_nombre where CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO'");
+          <?php $res = mysql_query("select distinct(CODIGO_REGISTRO),FECHA,GESTION,ESTADO_PAGO,USUARIO,NOMBRE_USUARIO,COMUNICACION_INTERNA,ENLACE from reg_contribuyente_habilitado_pago_cambio_nombre where CODIGO_ASOCIACION='" . mysql_real_escape_string($COD_ASOCIACION) . "' and ESTADO='ACTIVO'");
           while ($row = mysql_fetch_array($res)) { ?>
             <tr>
               <td height="23" bgcolor="#EBDBD6"><?php $CONTTS++;
@@ -152,9 +164,9 @@ while ($rowY = mysql_fetch_array($resultY)) {
               <td bgcolor="#EBDBD6"><?php echo $row[4] . ' - ' . $row[5]; ?></td>
               <td bgcolor="#EBDBD6"><?php echo $row[2]; ?></td>
               <td bgcolor="#EBDBD6"><?php echo $row[3] . ' - POR CAMBIO DE NOMBRE DE CONTRIBUYENTES'; ?></td>
-              <td bgcolor="#EBDBD6"><a href="../Cambio_Nombre/Pdf_Cambio_Nombre/<?php echo $row[7]; ?>.pdf" target="_new"><?php echo $row[6]; ?></a></td>
+              <td bgcolor="#EBDBD6"><?php if ($row[6] !== 'NO GENERADO' && preg_match('/^[0-9]{4}\/[A-Za-z0-9_-]+$/', $row[7])) { ?><a href="../Cambio_Nombre/Pdf_Cambio_Nombre/<?php echo htmlspecialchars($row[7], ENT_QUOTES, 'UTF-8'); ?>.pdf" target="_blank"><?php echo htmlspecialchars($row[6], ENT_QUOTES, 'UTF-8'); ?></a><?php } else { echo htmlspecialchars($row[6], ENT_QUOTES, 'UTF-8'); } ?></td>
               <td>&nbsp;</td>
-              <td><a href="frmEliminarCi_CN_CC2.php?GESTIONSELECIONADA=<?php echo $row[2]; ?>&CN=1&CODIGO_REGISTRO=<?php echo $row[0]; ?>">Eliminar Registros</a></td>
+              <td><a href="frmEliminarCi_CN_CC2.php?GESTIONSELECIONADA=<?php echo rawurlencode($row[2]); ?>&CN=1&CODIGO_REGISTRO=<?php echo rawurlencode($row[0]); ?>&COD_ASOCIACION=<?php echo rawurlencode($COD_ASOCIACION); ?>">Eliminar Registros</a></td>
             </tr>
           <?php }
           if ($CONTTS == 0) { ?>

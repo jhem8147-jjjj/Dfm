@@ -42,38 +42,50 @@ require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/D
       </thead>
       <tbody>
         <?php $result=mysql_query("select distinct RHP.ESTADO_REGISTRO from reg_asociacion ASOC,reg_contribuyente_habilitado_pago RHP where RHP.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION and RHP.ESTADO_REGISTRO='REGISTRO VALIDADO.' and  ASOC.ESTADO='ACTIVO' and RHP.ESTADO='ACTIVO'");
-		 while($row=mysql_fetch_array($result)){ ?>
+        if ($result === false) {
+            error_log("Consulta de comprobantes pendientes: no se pudo leer impuesto anual: " . mysql_error());
+        ?>
+        <tr><td colspan="5" class="ASTERISCO">La sección de Impuesto Eventual Anual no está disponible en este momento.</td></tr>
+        <?php } else { while($row=mysql_fetch_array($result)){ ?>
         <tr>
           <td><?php $CONT++; echo $CONT; ?></td>
           <td>IMPUESTO EVENTUAL ANUAL</td>
           <td align="center" style="font-weight: bold"><?php if($row[0]=='REGISTRO VALIDADO.'){echo 'REGISTRO(S) AUTORIZADO(S)';}else{echo 'REGISTRO(S) NO AUTORIZADO(S)';} ?></td>
           <td align="center" style="font-weight: bold"><?php $res=mysql_query("select count(*) from reg_asociacion ASOC,reg_contribuyente_habilitado_pago RHP where RHP.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION and RHP.ESTADO_REGISTRO='REGISTRO VALIDADO.' and  ASOC.ESTADO='ACTIVO' and RHP.ESTADO='ACTIVO'");
-		 while($rowt=mysql_fetch_array($res)){ echo $rowt[0];}?></td>
+          if ($res === false) { error_log("Consulta de comprobantes pendientes: no se pudo contar impuesto anual: " . mysql_error()); echo "No disponible"; } else { $rowt=mysql_fetch_array($res); echo $rowt[0]; } ?></td>
           <td align="center" style="font-weight: bold"><a href="frmConsultaCompPagoNoImpAnual.php">Ver Detalle</a></td>
           </tr>
-        <?php } ?>
+        <?php } } ?>
            <?php $result=mysql_query("select distinct RHP.ESTADO_PAGO from reg_asociacion ASOC,reg_contribuyente_habilitado_pago_cambio_nombre RHP where RHP.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION and RHP.ESTADO_COMUNICACION_INTERNA='GENERADO' and  ASOC.ESTADO='ACTIVO' and RHP.ESTADO='ACTIVO'");
-		 while($row=mysql_fetch_array($result)){ ?>
+           if ($result === false) {
+               error_log("Consulta de comprobantes pendientes: no se pudo leer cambio de nombre: " . mysql_error());
+           ?>
+          <tr><td colspan="5" class="ASTERISCO">La sección de Cambio de Nombre no está disponible en este momento.</td></tr>
+          <?php } else { while($row=mysql_fetch_array($result)){ ?>
           <tr>
             <td><?php $CONT++; echo $CONT; ?></td>
             <td>DERECHO DE ASENTAMIENTO EVENTUAL EN SITIO PUBLICO - CAMBIO(S) DE NOMBRE(S)</td>
             <td align="center" style="font-weight: bold"><?php echo 'REGISTRO(S) AUTORIZADO(S)'; ?></td>
             <td align="center" style="font-weight: bold"><?php $res=mysql_query("select count(*) from reg_asociacion ASOC,reg_contribuyente_habilitado_pago_cambio_nombre RHP where RHP.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION and RHP.ESTADO_COMUNICACION_INTERNA='GENERADO' and  ASOC.ESTADO='ACTIVO' and RHP.ESTADO='ACTIVO'");
-		 while($rowt=mysql_fetch_array($res)){ echo $rowt[0];}?></td>
+            if ($res === false) { error_log("Consulta de comprobantes pendientes: no se pudo contar cambio de nombre: " . mysql_error()); echo "No disponible"; } else { $rowt=mysql_fetch_array($res); echo $rowt[0]; } ?></td>
             <td align="center" style="font-weight: bold"><a href="frmConsultaCompPagoNoImpCn.php">Ver Detalle</a></td>
           </tr>
-          <?php } ?>
+          <?php } } ?>
           <?php $result=mysql_query("select distinct RHP.ESTADO_PAGO from reg_asociacion ASOC,reg_contribuyente_habilitado_pago_complementacion RHP where RHP.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION and RHP.ESTADO_COMUNICACION_INTERNA='GENERADO' and  ASOC.ESTADO='ACTIVO' and RHP.ESTADO='ACTIVO'");
-		 while($row=mysql_fetch_array($result)){ ?>
+          if ($result === false) {
+              error_log("Consulta de comprobantes pendientes: no se pudo leer complementacion: " . mysql_error());
+          ?>
+          <tr><td colspan="5" class="ASTERISCO">La sección de Complementación no está disponible en este momento.</td></tr>
+          <?php } else { while($row=mysql_fetch_array($result)){ ?>
           <tr>
             <td><?php $CONT++; echo $CONT; ?></td>
             <td>DERECHO DE ASENTAMIENTO EVENTUAL EN SITIO PUBLICO - COMPLEMENTO(S) DE CONTRIBUYENTE(S).</td>
             <td align="center" style="font-weight: bold"><?php echo 'REGISTRO(S) AUTORIZADO(S)'; ?></td>
             <td align="center" style="font-weight: bold"><?php $res=mysql_query("select count(*) from reg_asociacion ASOC,reg_contribuyente_habilitado_pago_complementacion RHP where RHP.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION and RHP.ESTADO_COMUNICACION_INTERNA='GENERADO' and  ASOC.ESTADO='ACTIVO' and RHP.ESTADO='ACTIVO'");
-		 while($rowt=mysql_fetch_array($res)){ echo $rowt[0];}?></td>
+            if ($res === false) { error_log("Consulta de comprobantes pendientes: no se pudo contar complementacion: " . mysql_error()); echo "No disponible"; } else { $rowt=mysql_fetch_array($res); echo $rowt[0]; } ?></td>
             <td align="center" style="font-weight: bold"><a href="frmConsultaCompPagoNoImpCc.php">Ver Detalle</a></td>
           </tr>
-          <?php } ?>
+          <?php } } ?>
           
         
       </tbody>

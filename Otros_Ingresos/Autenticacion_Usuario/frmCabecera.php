@@ -9,11 +9,11 @@ body {
 	background-image: url(../Img/fondo3.jpg);
 }
 a:link {
-	color: #F60;
+	color: #591F94;
 	text-decoration: none;
 }
 a:visited {
-	color: #F60;
+	color: #591F94;
 	text-decoration: none;
 }
 body,td,th {
@@ -22,7 +22,7 @@ body,td,th {
 }
 a:hover {
 	text-decoration: underline;
-	color: #F90;
+	color: #591F94;
 }
 a:active {
 	text-decoration: none;
@@ -33,7 +33,7 @@ a:active {
 
     <tr>
       <td colspan="5" align="center"><table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
-      <td colspan="5"><hr color="#FFCC00"></td>
+      <td colspan="5"><hr color="#591F94"></td>
     </tr>
     <tr>
           <td>&nbsp;</td>

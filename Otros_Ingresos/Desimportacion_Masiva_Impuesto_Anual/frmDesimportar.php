@@ -1,4 +1,4 @@
-<?php  require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');require 'frmControlSesion.php';require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php';?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php header('Content-Type: text/html; charset=utf-8'); require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');require 'frmControlSesion.php';require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php'; mysql_set_charset("utf8", $conexion_usuarios) or die("NO SE PUDO CONFIGURAR LA CONEXION UTF-8: " . mysql_error($conexion_usuarios));?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -41,11 +41,11 @@
         <?php $result=mysql_query("select ASOC.ORDENANZA_MUNICIPAL,ASOC.DESCRIPCION,ASOC.ARCHIVO,ASOC.AFILIADOS,ZT.DESCRIPCION,ASOC.CODIGO_ASOCIACION,ASOC.ZONA_UBICACION from reg_asociacion ASOC, zona_tributaria ZT, reg_asociacion_zona_tributaria ASOCZT where ASOC.ESTADO='ACTIVO' and ZT.ESTADO='ACTIVO' and ASOCZT.ESTADO='ACTIVO' and ASOCZT.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION  and ASOCZT.CODIGO_ZONA=ZT.CODIGO_ZONA order by ASOC.DESCRIPCION"); while($row=mysql_fetch_array($result)){ ?>
         <tr>
           <td><?php $CONT++; echo $CONT; ?></td>
-          <td><?php echo $row[0]; ?></td>
-          <td><?php echo utf8_decode($row[1]); ?></td>
-          <td><?php echo utf8_decode($row[6]); ?></td>
-          <td align="center" style="font-weight: bold"><?php echo $row[4]; ?></td>
-          <td align="center" style="font-weight: bold"><a href="frmDesimportar1.php?OMS=<?php echo $row['0'];?>&COD_ASOCIACION=<?php echo $row['5'];?>&ASOCIACION=<?php echo $row['1'];?>">Seleccionar</a></td>
+          <td><?php echo htmlspecialchars(str_replace("Â°", "°", $row[0]), ENT_QUOTES, 'UTF-8'); ?></td>
+          <td><?php echo htmlspecialchars($row[1], ENT_QUOTES, 'UTF-8'); ?></td>
+          <td><?php echo htmlspecialchars($row[6], ENT_QUOTES, 'UTF-8'); ?></td>
+          <td align="center" style="font-weight: bold"><?php echo htmlspecialchars($row[4], ENT_QUOTES, 'UTF-8'); ?></td>
+          <td align="center" style="font-weight: bold"><a href="frmDesimportar1.php?OMS=<?php echo urlencode($row[0]); ?>&amp;COD_ASOCIACION=<?php echo urlencode($row[5]); ?>&amp;ASOCIACION=<?php echo urlencode($row[1]); ?>">Seleccionar</a></td>
           </tr>
         <?php } ?>
       </tbody>

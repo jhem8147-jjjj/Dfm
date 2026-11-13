@@ -33,7 +33,7 @@ a:active {
 
     <tr>
       <td colspan="5" align="center"><table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
-      <td colspan="5"><hr color="#FFCC00"></td>
+      <td colspan="5"><hr color="#591F94"></td>
     </tr>
     <tr>
           <td>&nbsp;</td>

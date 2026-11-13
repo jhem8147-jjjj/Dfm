@@ -1,4 +1,4 @@
-<?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php';
+<?php header('Content-Type: text/html; charset=utf-8'); require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php'; mysql_set_charset("utf8", $conexion_usuarios) or die("NO SE PUDO CONFIGURAR LA CONEXION UTF-8: " . mysql_error($conexion_usuarios));
 if($txtMod==1){
 $CONTSS=0;
 /*CONSULTA SI ESTA LIQUIDADO*/	
@@ -55,9 +55,9 @@ $sql1="insert into reg_contribuyente_transacciones(PC_NAME,PC_IP,USUARIO,NOMBRE_
         <td><form  method="post" action='frmDesimportar3.php'>
           <span style="font-weight: bold">
           <input name="txtMod" type="hidden" id="txtMod" value="1" />
-          <input name="COD_ASOCIACION" type="hidden" id="COD_ASOCIACION" value="<?php echo $COD_ASOCIACION;?>" />
+          <input name="COD_ASOCIACION" type="hidden" id="COD_ASOCIACION" value="<?php echo htmlspecialchars($COD_ASOCIACION, ENT_QUOTES, 'UTF-8');?>" />
           <input name="CODIGOREGISTRO" type="hidden" id="CODIGOREGISTRO" value="<?php echo $CODIGOREGISTRO;?>" />
-          <input name="ASOCIACION" type="hidden" id="ASOCIACION" value="<?php echo utf8_decode($ASOCIACION);?>" />
+          <input name="ASOCIACION" type="hidden" id="ASOCIACION" value="<?php echo htmlspecialchars($ASOCIACION, ENT_QUOTES, 'UTF-8');?>" />
           <input name="txtGestion" type="hidden" id="txtGestion" value="<?php echo $txtGestion;?>" />
           <input name="txtObservaciones" type="hidden" id="txtObservaciones" value="<?php echo $txtObservaciones;?>" />
           </span>

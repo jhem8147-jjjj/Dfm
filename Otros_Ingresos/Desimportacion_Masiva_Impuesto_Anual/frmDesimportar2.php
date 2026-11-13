@@ -1,4 +1,4 @@
-<?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php';
+<?php header('Content-Type: text/html; charset=utf-8'); require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php'; mysql_set_charset("utf8", $conexion_usuarios) or die("NO SE PUDO CONFIGURAR LA CONEXION UTF-8: " . mysql_error($conexion_usuarios));
 $_SESSION['CODIGOREGISTRO']=$CODIGOREGISTRO;
 
 $cont=0;
@@ -33,11 +33,11 @@ $cont=0;
     <td><table width="100%" border="1" cellpadding="1" cellspacing="1" bordercolor="#FFFFFF">
       <tr>
         <td width="47%" height="32" align="right" bgcolor="#CCCCCC">Documento de Registro :</td>
-        <td width="53%" style="font-weight: bold"><?php echo utf8_decode($OMS);?></td>
+        <td width="53%" style="font-weight: bold"><?php echo htmlspecialchars($OMS, ENT_QUOTES, 'UTF-8');?></td>
       </tr>
       <tr>
         <td height="32" align="right" bgcolor="#CCCCCC">Asociación Seleccionada :</td>
-        <td style="font-weight: bold"><?php echo utf8_decode($ASOCIACION);?></td>
+        <td style="font-weight: bold"><?php echo htmlspecialchars($ASOCIACION, ENT_QUOTES, 'UTF-8');?></td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC">Zona Tributaria :</td>
@@ -121,9 +121,9 @@ $cont=0;
       <tr>
         <td align="right">&nbsp;</td>
         <td><span style="font-weight: bold">
-          <input name="COD_ASOCIACION" type="hidden" id="COD_ASOCIACION" value="<?php echo $COD_ASOCIACION;?>" />
+          <input name="COD_ASOCIACION" type="hidden" id="COD_ASOCIACION" value="<?php echo htmlspecialchars($COD_ASOCIACION, ENT_QUOTES, 'UTF-8');?>" />
           <input name="CODIGOREGISTRO" type="hidden" id="CODIGOREGISTRO" value="<?php echo $CODIGOREGISTRO;?>" />
-          <input name="ASOCIACION" type="hidden" id="ASOCIACION" value="<?php echo utf8_decode($ASOCIACION);?>" />
+          <input name="ASOCIACION" type="hidden" id="ASOCIACION" value="<?php echo htmlspecialchars($ASOCIACION, ENT_QUOTES, 'UTF-8');?>" />
         </span>
           <input name="txtGestion" type="hidden" id="txtGestion" value="<?php echo $sltGestion;?>" />
           <input type="submit" name="button2" id="button2" value="Anular Registros" style="width:250px; height:35px"/></td>

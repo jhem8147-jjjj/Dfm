@@ -45,7 +45,7 @@ require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/D
             <?php $result=mysql_query("select ASOC.ORDENANZA_MUNICIPAL,ASOC.DESCRIPCION,ASOC.ARCHIVO,ASOC.AFILIADOS,ZT.DESCRIPCION,ASOC.CODIGO_ASOCIACION,ASOC.ZONA_UBICACION from reg_asociacion ASOC, zona_tributaria ZT, reg_asociacion_zona_tributaria ASOCZT where ASOC.ESTADO='ACTIVO' and ZT.ESTADO='ACTIVO' and ASOCZT.ESTADO='ACTIVO' and ASOCZT.CODIGO_ASOCIACION=ASOC.CODIGO_ASOCIACION  and ASOCZT.CODIGO_ZONA=ZT.CODIGO_ZONA order by ASOC.DESCRIPCION"); while($row=mysql_fetch_array($result)){ ?>
             <tr>
               <td><?php $CONT++; echo $CONT; ?></td>
-              <td><?php echo $row[0]; ?></td>
+              <td><?php echo htmlspecialchars(str_replace("Â°", "°", $row[0]), ENT_QUOTES, 'UTF-8'); ?></td>
               <td><?php echo $row[1]; ?></td>
               <td><?php echo $row[6]; ?></td>
               <td align="center" style="font-weight: bold"><?php echo $row[4]; ?></td>

@@ -1,16 +1,25 @@
-<?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
-require_once('../Control_Sesiones_Forms/Loading.php'); 
+<?php header('Content-Type: text/html; charset=utf-8');
+require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
 require '../Conexion_BD/Dbms.php';
-if(empty($_SESSION['COD_REGISTRO'])){include_once("Index.php");}
-if(empty($_SESSION['CODIGO_ZONA_TRIB'])){include_once("Index.php");}
-if(empty($_SESSION['COD_ASOCIACION'])){include_once("Index.php");}
-if(empty($_SESSION['ASOCIACION'])){include_once("Index.php");}
-if(empty($_SESSION['txtCodigoRegistro'])){include_once("Index.php");}
-if(empty($_SESSION['txtFecha'])){include_once("Index.php");}
-if(empty($_SESSION['txtObservaciones'])){include_once("Index.php");}
-if(empty($_SESSION['sltGestion'])){include_once("Index.php");}
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+$contextFields = array('COD_REGISTRO', 'CODIGO_ZONA_TRIB', 'COD_ASOCIACION', 'ASOCIACION', 'OMS', 'txtCodigoRegistro', 'txtDocumento', 'txtFecha', 'txtObservaciones', 'sltGestion');
+foreach ($contextFields as $contextField) {
+    if (isset($_POST[$contextField]) && is_scalar($_POST[$contextField]) && (string)$_POST[$contextField] !== '') {
+        $_SESSION[$contextField] = (string)$_POST[$contextField];
+    } elseif (isset($_GET[$contextField]) && is_scalar($_GET[$contextField]) && (string)$_GET[$contextField] !== '') {
+        $_SESSION[$contextField] = (string)$_GET[$contextField];
+    }
+}
+if(empty($_SESSION['COD_REGISTRO']) || empty($_SESSION['CODIGO_ZONA_TRIB']) || empty($_SESSION['COD_ASOCIACION']) || empty($_SESSION['ASOCIACION']) || empty($_SESSION['txtCodigoRegistro']) || empty($_SESSION['txtDocumento']) || empty($_SESSION['txtFecha']) || empty($_SESSION['sltGestion'])){
+    header('Location: Index.php');
+    exit;
+}
+$contextValues = array();
+foreach ($contextFields as $contextField) {
+    $contextValues[$contextField] = isset($_SESSION[$contextField]) && is_scalar($_SESSION[$contextField])
+        ? (string)$_SESSION[$contextField] : '';
+}
+?><!DOCTYPE html>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel='StyleSheet' href='../Css_Formularios/frmProcesos.css' type="text/css">
@@ -18,8 +27,10 @@ if(empty($_SESSION['sltGestion'])){include_once("Index.php");}
 <script src='Js/Ajax/jquery.min.js' type="text/javascript"></script>
 <script src='Js/frmAgregarCont.js' type="text/javascript"></script>
 </head>
-<form method="post" action="frmCambioNombre1.php">
 <body>
+<?php foreach ($contextValues as $contextField => $contextValue) { ?>
+<input type="hidden" name="<?php echo htmlspecialchars($contextField, ENT_QUOTES, 'UTF-8'); ?>" value="<?php echo htmlspecialchars($contextValue, ENT_QUOTES, 'UTF-8'); ?>" />
+<?php } ?>
 <table width="50%" border="0">
   <tr>
     <td align="center" class="TITULO">COMPLEMENTO</td>
@@ -32,7 +43,6 @@ if(empty($_SESSION['sltGestion'])){include_once("Index.php");}
   </tr>
   <tr>
     <td align="left"><table width="20%" border="0">
-     <?php $resulty=mysql_query("select * from contribuyentes where CODIGO_CONTRIBUYENTE='$CODIGO_CONTRIBUYENTE' and ESTADO='ACTIVO'"); while($rowy=mysql_fetch_array($resulty)){ ?><?PHP } ?>
       <tr>
         <td colspan="2"  align="left"><span style="font-weight: bold">DATOS CONTRIBUYENTE</span>.</td>
       </tr>
@@ -41,12 +51,11 @@ if(empty($_SESSION['sltGestion'])){include_once("Index.php");}
       </tr>
       <tr>
         <td width="46%"  align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Nro. de Cédula de Identidad :</td>
-        <td width="54%" style="font-weight: bold"><input name="txtNroCi" type="text" id="txtNroCi" style="width:150px; height:20px" onkeyup="buscar_ajax(this.value);return fileValidation();" size="10" onkeypress="return soloNumeros(event)" placeholder="Nro. de C.I."/></td>
+        <td width="54%" style="font-weight: bold"><input name="txtNroCi" type="text" id="txtNroCi" style="width:150px; height:20px" onkeyup="buscar_ajax(this.value)" size="10" onkeypress="return soloNumeros(event)" placeholder="Nro. de C.I."/></td>
       </tr>
       <tr>
         <td colspan="2"  align="right"><div id="mostrar"></div></td>
       </tr>
-     <?php $res=mysql_query("select * from reg_contribuyente_habilitado_pago where REGISTRO_GREMIAL='$NUMERO_GREMIAL' and ESTADO='ACTIVO' and CODIGO_ASOCIACION='$COD_ASOCIACION'"); while($ros=mysql_fetch_array($res)){ $_SESSION['MONTOS']=$ros['MONTO'];$_SESSION['TIPO_PUESTOS']=$ros['TIPO_VENTA'];?><?php } ?>
       <tr>
         <td colspan="2"  align="right"><img src="../Img/Blanco.png" width="661" height="6" /></td>
       </tr>
@@ -62,5 +71,5 @@ if(empty($_SESSION['sltGestion'])){include_once("Index.php");}
     <td class="ASTERISCO">VER. 4</td>
   </tr>
 </table>
-</body></form>
+</body>
 </html><?php require '../Conexion_BD/Cerrar_Dbms.php';?>

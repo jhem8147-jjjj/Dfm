@@ -1,4 +1,30 @@
-<?php  require_once('../../Control_Sesiones_Forms/frmControlSesionUsuario.php');require '../../Conexion_BD/Dbms.php'; $GESTION=date('Y');$cont=0;
+<?php  require_once('../../Control_Sesiones_Forms/frmControlSesionUsuario.php');require '../../Conexion_BD/Dbms.php'; require_once '../../Conexion_BD/request.php';
+$COD_ASOCIACION = appRequestValue('COD_ASOCIACION');
+$CODIGO_REGISTRO = appRequestValue('CODIGO_REGISTRO');
+$sltGestion = appRequestValue('sltGestion');
+if ($COD_ASOCIACION === '' || $CODIGO_REGISTRO === '' || $sltGestion === '') {
+	die('No se puede generar la comunicación interna: faltan datos de asociación, registro o gestión.');
+}
+$COD_ASOCIACION_SQL = mysql_real_escape_string($COD_ASOCIACION);
+$CODIGO_REGISTRO_SQL = mysql_real_escape_string($CODIGO_REGISTRO);
+$sltGestion_SQL = mysql_real_escape_string($sltGestion);
+$SIOICARGO = isset($_SESSION['SIOICARGO']) ? $_SESSION['SIOICARGO'] : '';
+if ($SIOICARGO === '') {
+	die('No se puede generar la comunicación interna: no se encontró el cargo del usuario en la sesión.');
+}
+$res=mysql_query("select * from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where RCHP.CODIGO_REGISTRO='$CODIGO_REGISTRO_SQL' and RCHP.CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' and RCHP.CODIGO_CONTRIBUYENTE=CONTRI.CODIGO_CONTRIBUYENTE and RCHP.ESTADO='ACTIVO' and CONTRI.ESTADO='ACTIVO' and RCHP.GESTION='$sltGestion_SQL' and RCHP.ESTADO_REGISTRO='REGISTRO VALIDADO.'");
+while($row=mysql_fetch_array($res)){ $cont++; }
+if ($cont === 0) {
+	die('No se puede generar la comunicación interna: no hay registros validados para la gestión y asociación seleccionadas.');
+}
+$autoridades = mysql_query("select id from reg_comunicacion_interna_autoridades where ESTADO='ACTIVO' and NIVEL is not null and trim(NOMBRE_A)<>'' and trim(CARGO_A)<>''") or die('No se pudo verificar las autoridades de comunicación interna: ' . mysql_error());
+if (mysql_num_rows($autoridades) === 0) {
+	die('No se puede generar la comunicación interna: no hay autoridades completas configuradas.');
+}
+$ENCONTRADO = 0;
+$SEC_GENERAL = '';
+$CONTACTOS = '';
+$GESTION=date('Y');$cont=0;
 $ANIOS=date('Y')-1;
 $res=mysql_query("select * from nros_comunicacion_interna where GESTION='$GESTION' and ESTADO='ACTIVO'");while($ro=mysql_fetch_array($res)){
 $ENCONTRADO=1;
@@ -9,7 +35,7 @@ $sql1="insert into nros_comunicacion_interna(GESTION,NRO)values('$GESTION','0')"
 	}
 
 //extrae DATOS del secretario general
-$res=mysql_query("select SG.DOC_IDENTIDAD,SG.DOC_IDENTIDAD_ALFA,SG.EXPEDIDO,SG.NOMBRE_RSOCIAL,SG.PRIMER_APELLIDO,SG.SEGUNDO_APELLIDO,SG.APELLIDO_ESPOSO,SG.TELEFONO,SG.CELULAR,SG.EMAIL  from reg_secretario_general_asociacion RSGA, secretario_general SG where RSGA.CODIGO_ASOCIACION='$COD_ASOCIACION' and RSGA.CODIGO_SECRETARIO_GENERAL=SG.CODIGO_SECRETARIO_GENERAL and RSGA.ESTADO='ACTIVO' and RSGA.GESTION='$ANIOS' and SG.ESTADO='ACTIVO'");
+$res=mysql_query("select SG.DOC_IDENTIDAD,SG.DOC_IDENTIDAD_ALFA,SG.EXPEDIDO,SG.NOMBRE_RSOCIAL,SG.PRIMER_APELLIDO,SG.SEGUNDO_APELLIDO,SG.APELLIDO_ESPOSO,SG.TELEFONO,SG.CELULAR,SG.EMAIL  from reg_secretario_general_asociacion RSGA, secretario_general SG where RSGA.CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' and RSGA.CODIGO_SECRETARIO_GENERAL=SG.CODIGO_SECRETARIO_GENERAL and RSGA.ESTADO='ACTIVO' and RSGA.GESTION='$ANIOS' and SG.ESTADO='ACTIVO'");
 		  	  while($row=mysql_fetch_array($res)){ if($row[6]== null){$SEC_GENERAL=$row[3].' '.$row[4].' '.$row[5].', ';}else{$SEC_GENERAL= $row[3].' '.$row[4].' '.$row[5].' de '.$row[6].', ';}
 			  if(strlen($row[7])>4 ){$CONTACTOS=' TEL.'.$row[7].'.';}
 			   if(strlen($row[8])>4){$CONTACTOS=$CONTACTOS.' CEL.'.$row[8].'.';}
@@ -18,10 +44,17 @@ $res=mysql_query("select SG.DOC_IDENTIDAD,SG.DOC_IDENTIDAD_ALFA,SG.EXPEDIDO,SG.N
 			  }
 if($SEC_GENERAL==null){$SEC_GENERAL='NO DEFINIDO';}
 
-$res=mysql_query("select * from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where  RCHP.CODIGO_REGISTRO='$CODIGO_REGISTRO' and RCHP.CODIGO_ASOCIACION='$COD_ASOCIACION' and RCHP.CODIGO_CONTRIBUYENTE=CONTRI.CODIGO_CONTRIBUYENTE and RCHP.ESTADO='ACTIVO' and CONTRI.ESTADO='ACTIVO' and RCHP.GESTION='$sltGestion' and RCHP.ESTADO_REGISTRO='REGISTRO VALIDADO.'");
+$res=mysql_query("select * from reg_contribuyente_habilitado_pago RCHP, contribuyentes CONTRI where  RCHP.CODIGO_REGISTRO='$CODIGO_REGISTRO_SQL' and RCHP.CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' and RCHP.CODIGO_CONTRIBUYENTE=CONTRI.CODIGO_CONTRIBUYENTE and RCHP.ESTADO='ACTIVO' and CONTRI.ESTADO='ACTIVO' and RCHP.GESTION='$sltGestion_SQL' and RCHP.ESTADO_REGISTRO='REGISTRO VALIDADO.'");
 		  while($row=mysql_fetch_array($res)){ $cont++;}
+if ($cont === 0) {
+	die('No se puede generar la comunicación interna: no hay registros validados para la gestión y asociación seleccionadas.');
+}
+$autoridades = mysql_query("select id from reg_comunicacion_interna_autoridades where ESTADO='ACTIVO' and NIVEL is not null and trim(NOMBRE_A)<>'' and trim(CARGO_A)<>''") or die('No se pudo verificar las autoridades de comunicación interna: ' . mysql_error());
+if (mysql_num_rows($autoridades) === 0) {
+	die('No se puede generar la comunicación interna: no hay autoridades completas configuradas.');
+}
 //extrae DATOS del secretario general
-$res=mysql_query("select SG.DOC_IDENTIDAD,SG.DOC_IDENTIDAD_ALFA,SG.EXPEDIDO,SG.NOMBRE_RSOCIAL,SG.PRIMER_APELLIDO,SG.SEGUNDO_APELLIDO,SG.APELLIDO_ESPOSO,SG.TELEFONO,SG.CELULAR,SG.EMAIL  from reg_secretario_general_asociacion RSGA, secretario_general SG where RSGA.CODIGO_ASOCIACION='$COD_ASOCIACION' and RSGA.CODIGO_SECRETARIO_GENERAL=SG.CODIGO_SECRETARIO_GENERAL and RSGA.ESTADO='ACTIVO' and RSGA.GESTION='$ANIOS' and SG.ESTADO='ACTIVO'");
+$res=mysql_query("select SG.DOC_IDENTIDAD,SG.DOC_IDENTIDAD_ALFA,SG.EXPEDIDO,SG.NOMBRE_RSOCIAL,SG.PRIMER_APELLIDO,SG.SEGUNDO_APELLIDO,SG.APELLIDO_ESPOSO,SG.TELEFONO,SG.CELULAR,SG.EMAIL  from reg_secretario_general_asociacion RSGA, secretario_general SG where RSGA.CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' and RSGA.CODIGO_SECRETARIO_GENERAL=SG.CODIGO_SECRETARIO_GENERAL and RSGA.ESTADO='ACTIVO' and RSGA.GESTION='$ANIOS' and SG.ESTADO='ACTIVO'");
 		  	  while($row=mysql_fetch_array($res)){
 		 if($row[6]== null){$SEC_GENERAL=$row[3].' '.$row[4].' '.$row[5].', REFERENCIA(S): ';}else{$SEC_GENERAL= $row[3].' '.$row[4].' '.$row[5].' de '.$row[6].', REFERENCIA(S):';}
 		 $CONTACTOS='';
@@ -31,17 +64,18 @@ $res=mysql_query("select SG.DOC_IDENTIDAD,SG.DOC_IDENTIDAD_ALFA,SG.EXPEDIDO,SG.N
 		  }
 if($SEC_GENERAL==null){$SEC_GENERAL='NO DEFINIDO';}
 
-$result=mysql_query("select * from reg_asociacion where CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO'"); while($row=mysql_fetch_array($result)){
-	if($row['AFILIADOS']==0){$AFILIADOS=utf8_decode($row['OBSERVACIONES']);}else{
+$result=mysql_query("select * from reg_asociacion where CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' and ESTADO='ACTIVO'"); while($row=mysql_fetch_array($result)){
+	if($row['AFILIADOS']==0){$AFILIADOS=$row['OBSERVACIONES'];}else{
 $AFILIADOS=$row['AFILIADOS'];}
-$OM=utf8_decode($row['ORDENANZA_MUNICIPAL']);
-$ASOCIACION=utf8_decode($row['DESCRIPCION']);
-$LUGARES_ASENT=utf8_decode($row['ZONA_UBICACION']);
-$LUGARES_ASENTA=utf8_decode($row['DIRECCION']);
+$OM=$row['ORDENANZA_MUNICIPAL'];
+$ASOCIACION=$row['DESCRIPCION'];
+$LUGARES_ASENT=$row['ZONA_UBICACION'];
+$LUGARES_ASENTA=$row['DIRECCION'];
 	}
+$ASOCIACION_SQL = mysql_real_escape_string($ASOCIACION);
 //OBTIENE LA ZONA TRIBUTARIA
-$result=mysql_query("select ZT.DESCRIPCION from reg_asociacion_zona_tributaria AZT,zona_tributaria ZT where AZT.CODIGO_ASOCIACION='$COD_ASOCIACION' and ZT.CODIGO_ZONA=AZT.CODIGO_ZONA and AZT.ESTADO='ACTIVO' and ZT.ESTADO='ACTIVO'"); while($row=mysql_fetch_array($result)){
-$ZONATRIBUTARIA=utf8_decode($row['0']);
+$result=mysql_query("select ZT.DESCRIPCION from reg_asociacion_zona_tributaria AZT,zona_tributaria ZT where AZT.CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' and ZT.CODIGO_ZONA=AZT.CODIGO_ZONA and AZT.ESTADO='ACTIVO' and ZT.ESTADO='ACTIVO'"); while($row=mysql_fetch_array($result)){
+$ZONATRIBUTARIA=$row['0'];
 
 	}
 
@@ -52,9 +86,12 @@ $query = mysql_query("UPDATE nros_comunicacion_interna  SET NRO='$CODIGO_NRO' wh
 
 $HOY_ES=$dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " de ".date('Y');
 $NOMBRE='';
-	$NOMBRE='COM_INT_DF_AC_AP_00'.$CODIGO_NRO.'_'.$GESTION;?>
+	$NOMBRE='COM_INT_DF_AC_AP_00'.$CODIGO_NRO.'_'.$GESTION;
+require_once(dirname(__FILE__) . '/GenerarComunicacionInternaPdf.php');
+exit;
+?>
 <?php /* En los encabezados indicamos que se trata de un documento de MS-WORD
-  y en el nombre de archivo le ponemos la extensi�n RTF.            */
+  y en el nombre de archivo le ponemos la extensi�n RTF.            */
 header('Content-type: application/vnd.msword');
 header("Content-Disposition: attachment; filename=".$NOMBRE.".doc");
 header("Pragma: no-cache"); header("Expires: 0");  
@@ -96,7 +133,7 @@ body,td,th {
     <td align="right">&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
-<?php $resulty=mysql_query("select * from reg_comunicacion_interna_autoridades where ESTADO='ACTIVO' order by NIVEL "); while($rowy=mysql_fetch_array($resulty)){if($rowy['NIVEL']=='NIVEL 1'){ $NIVELES='A :'; }else{$NIVELES='VIA :';} ?>
+<?php $resulty=mysql_query("select * from reg_comunicacion_interna_autoridades where ESTADO='ACTIVO' and NIVEL is not null and trim(NOMBRE_A)<>'' and trim(CARGO_A)<>'' order by NIVEL "); while($rowy=mysql_fetch_array($resulty)){if($rowy['NIVEL']=='NIVEL 1'){ $NIVELES='A :'; }else{$NIVELES='VIA :';} ?>
   
   <tr>
     <td width="34%" align="right"><span class="Estilo18"><?php echo $NIVELES;?></span></td>
@@ -247,7 +284,7 @@ body,td,th {
         <td align="center" bgcolor="#CCCCCC" class="Estilo23">PUESTO</td>
       </tr><?php 
 	 $cont=0; //BUSCA LOS REGISTROS HABILITADOS
-  $res=mysql_query("select  CONTRI.DOC_IDENTIDAD,CONTRI.DOC_IDENTIDAD_ALFA,CONTRI.EXPEDIDO,CONTRI.NOMBRE_RSOCIAL,CONTRI.PRIMER_APELLIDO,CONTRI.SEGUNDO_APELLIDO,CONTRI.APELLIDO_ESPOSO,RCA.GESTION,RCA.TIPO_VENTA,RCA.FILA,RCA.PUESTO,RCA.REGISTRO_GREMIAL,RCA.GESTION,RCA.MONTO,RCA.Id,CONTRI.APELLIDO_ESPOSO  from reg_contribuyente_habilitado_pago RCA, contribuyentes CONTRI where RCA.CODIGO_REGISTRO='$CODIGO_REGISTRO' and RCA.CODIGO_ASOCIACION='$COD_ASOCIACION' and RCA.CODIGO_CONTRIBUYENTE=CONTRI.CODIGO_CONTRIBUYENTE and RCA.ESTADO='ACTIVO' and CONTRI.ESTADO='ACTIVO' and RCA.GESTION='$sltGestion'");
+  $res=mysql_query("select  CONTRI.DOC_IDENTIDAD,CONTRI.DOC_IDENTIDAD_ALFA,CONTRI.EXPEDIDO,CONTRI.NOMBRE_RSOCIAL,CONTRI.PRIMER_APELLIDO,CONTRI.SEGUNDO_APELLIDO,CONTRI.APELLIDO_ESPOSO,RCA.GESTION,RCA.TIPO_VENTA,RCA.FILA,RCA.PUESTO,RCA.REGISTRO_GREMIAL,RCA.GESTION,RCA.MONTO,RCA.Id,CONTRI.APELLIDO_ESPOSO  from reg_contribuyente_habilitado_pago RCA, contribuyentes CONTRI where RCA.CODIGO_REGISTRO='$CODIGO_REGISTRO_SQL' and RCA.CODIGO_ASOCIACION='$COD_ASOCIACION_SQL' and RCA.CODIGO_CONTRIBUYENTE=CONTRI.CODIGO_CONTRIBUYENTE and RCA.ESTADO='ACTIVO' and CONTRI.ESTADO='ACTIVO' and RCA.GESTION='$sltGestion_SQL'");
  while($row=mysql_fetch_array($res)){ 
 			  $conts++;
 if($row['1']== null){$CIS=$row['0'].' '.$row['1'].' '.$row['2'];}else{$CIS=$row['0'].' - '.$row['1'].' '.$row['2'];};
@@ -263,7 +300,7 @@ if($row['6']== null){$NOMBRES=$row['3'].' '.$row['4'].' '.$row['5'];}else{$NOMBR
         <td align="center" class="Estilo16"><?php echo utf8_decode($row[9]);?></td>
         <td align="center" class="Estilo16"><?php echo utf8_decode($row[10]);?></td></tr><?php   
 		//ACTUALIZA LOS REGISTROS DE LA COMUNICACION INTERNA
-$query = mysql_query("UPDATE reg_contribuyente_habilitado_pago  SET COMUNICACION_INTERNA='$COMUNICACION_INTERNA', ENLACE='GENERADO MEDIANTE ARCHIVO WORD.' where Id='$row[14]' and CODIGO_REGISTRO='$CODIGO_REGISTRO' and ESTADO='ACTIVO'")or die ("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_contribuyente_habilitado_pago.");
+$query = mysql_query("UPDATE reg_contribuyente_habilitado_pago  SET COMUNICACION_INTERNA='$COMUNICACION_INTERNA', ENLACE='GENERADO MEDIANTE ARCHIVO WORD.' where Id='$row[14]' and CODIGO_REGISTRO='$CODIGO_REGISTRO_SQL' and ESTADO='ACTIVO'")or die ("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_contribuyente_habilitado_pago.");
 		     }  ?> </table></td>
   </tr>
   <tr>
@@ -276,7 +313,7 @@ $query = mysql_query("UPDATE reg_contribuyente_habilitado_pago  SET COMUNICACION
 </body><?php  
 //REGISTRA LAS TRANSACCIONES.
 $COD_REGISTRO=date('Ymd His');
-$sql1="insert into reg_contribuyente_transacciones(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,TRANSACCION_1,DESCRIPCION_TRAMITE,OBSERVACIONES,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$COD_ASOCIACION','$ASOCIACION','COMUNICACION INTERNA PAGO IMPUESTO ANUAL $sltGestion','COMUNICACION INTERNA - $COMUNICACION_INTERNA.','COMUNICACION INTERNA - $COMUNICACION_INTERNA.','0')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones.");
+$sql1="insert into reg_contribuyente_transacciones(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,TRANSACCION_1,DESCRIPCION_TRAMITE,OBSERVACIONES,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$COD_ASOCIACION_SQL','$ASOCIACION_SQL','COMUNICACION INTERNA PAGO IMPUESTO ANUAL $sltGestion_SQL','COMUNICACION INTERNA - $COMUNICACION_INTERNA.','COMUNICACION INTERNA - $COMUNICACION_INTERNA.','0')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones.");
 //REGISTRA LA COMUNICACION INTERNA
-$sql1="insert into reg_comunicacion_interna(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,COMUNICACION_INTERNA,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$COD_ASOCIACION','$ASOCIACION','$COMUNICACION_INTERNA','GENERADO MEDIANTE ARCHIVO WORD. - PARA LA GESTION $sltGestion')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones.");
+$sql1="insert into reg_comunicacion_interna(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,COMUNICACION_INTERNA,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$COD_ASOCIACION_SQL','$ASOCIACION_SQL','$COMUNICACION_INTERNA','GENERADO MEDIANTE ARCHIVO WORD. - PARA LA GESTION $sltGestion_SQL')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones.");
  echo $output; ?></span>

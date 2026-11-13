@@ -101,12 +101,12 @@ echo "<script>alert('Se RECOMIENDA eliminar los registros anteriores subidos con
       </tr><?PHP } ?>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Documento de Respaldo :</td>
-        <td><input name="txtDocumentoRespaldo" type="text" id="txtDocumentoRespaldo" size="50" maxlength="100" onchange="javascript:this.value=this.value.toUpperCase();" onkeypress="return soloNumAlfSig(event);" required/></td>
+        <td><input name="txtDocumentoRespaldo" type="text" id="txtDocumentoRespaldo" size="50" maxlength="100" onchange="javascript:this.value=this.value.toUpperCase();"  required/></td>
         <td>&nbsp;</td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Autorizado Por:</td>
-        <td><input name="txtAutorizado" type="text" id="txtAutorizado" size="50" maxlength="100" onchange="javascript:this.value=this.value.toUpperCase();" onkeypress="return soloLetras(event);" required/></td>
+        <td><input name="txtAutorizado" type="text" id="txtAutorizado" size="50" maxlength="100" onchange="javascript:this.value=this.value.toUpperCase();"  required/></td>
         <td>&nbsp;</td>
       </tr>
       <tr>

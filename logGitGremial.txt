@@ -1,0 +1,35 @@
+commit 6347c799421f4f663b0e404632dca1ac45c46aaf
+Author: DATM-SIS <DATM@example.com>
+Date:   Thu Apr 23 19:10:23 2026 -0430
+
+    Se agrego librerias en direcciones donde se generaba error 404
+
+commit aeb5d1297e85b581a4bb8e9d111b5e69d07913e1
+Author: DATM-SIS <DATM@example.com>
+Date:   Fri Dec 5 14:58:00 2025 -0430
+
+    se agrego margen para qr
+
+commit 08e551a02aaadf9149d46238609919298e0cf3f7
+Author: DATM-SIS <DATM@example.com>
+Date:   Mon Jul 29 11:17:05 2024 -0430
+
+    fix impresion de comprobante original y reimpresion
+
+commit 3ec29db6249cff7e29783aaafb7d1cd658b5c5f3
+Author: DATM-SIS <DATM@example.com>
+Date:   Tue Jul 9 17:02:00 2024 -0430
+
+    correccion de impresion original comprobante pago camb nombre
+
+commit 8d88a7dd4baa508534b836c13d85455ed874baf0
+Author: DATM-SIS <DATM@example.com>
+Date:   Wed Jun 12 10:48:56 2024 -0430
+
+    CERREGIDO IMPRESION ORIGINAL Y COPIA
+
+commit c898c00bcfcd26fb631de7a5bef7089d3c5da174
+Author: unknown <usu@usu-PC.lan.gamea.gob.bo>
+Date:   Wed Mar 27 10:23:56 2024 -0430
+
+    PREVIO INICIO DE FIX CRV

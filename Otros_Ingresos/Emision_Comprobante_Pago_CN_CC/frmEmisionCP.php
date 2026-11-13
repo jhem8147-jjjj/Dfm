@@ -57,7 +57,7 @@ require '../Conexion_BD/Dbms.php'; ?>
                     <tr>
                       <td><?php $CONT++;
                           echo $CONT; ?></td>
-                      <td><?php echo $row[0]; ?></td>
+                      <td><?php echo htmlspecialchars(str_replace("Â°", "°", $row[0]), ENT_QUOTES, 'UTF-8'); ?></td>
                       <td><?php echo $row[1]; ?></td>
                       <td><?php echo $row[6]; ?></td>
                       <td align="center" style="font-weight: bold"><?php echo $row[4]; ?></td>

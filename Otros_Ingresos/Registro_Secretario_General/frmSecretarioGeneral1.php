@@ -1,6 +1,7 @@
-<?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php'); 
- require_once('../Control_Sesiones_Forms/Loading.php'); 
- require '../Conexion_BD/Dbms.php';
+<?php
+header('Content-Type: text/html; charset=UTF-8');
+require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
+require '../Conexion_BD/Dbms.php';
 $_SESSION['COD_ASOCIACION']=$COD_ASOCIACION;
 $_SESSION['ASOCIACION']=$ASOCIACION;
 //REGISTRA AL SECRETARIO GENERAL
@@ -33,7 +34,7 @@ echo"<script> alert('Se Registró los datos del Secretario General.');</script>"
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel='StyleSheet' href='../Css_Formularios/frmProcesos.css' type="text/css">
 <link rel="stylesheet" href="../CssTablas/Css/bootstrap.min.css">
 <link rel="stylesheet" href="../CssTablas/Css/dataTables.bootstrap.min.css">

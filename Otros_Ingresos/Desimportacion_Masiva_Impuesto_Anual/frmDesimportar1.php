@@ -1,6 +1,8 @@
-<?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
+<?php header('Content-Type: text/html; charset=utf-8');
+require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
 require_once('../Control_Sesiones_Forms/Loading.php');
 require '../Conexion_BD/Dbms.php';
+mysql_set_charset("utf8", $conexion_usuarios) or die("NO SE PUDO CONFIGURAR LA CONEXION UTF-8: " . mysql_error($conexion_usuarios));
 $_SESSION['COD_ASOCIACION'] = $COD_ASOCIACION;
 $_SESSION['OMS'] = $OMS;
 $_SESSION['ASOCIACION'] = $ASOCIACION;
@@ -35,13 +37,13 @@ unset($_SESSION['CODIGOREGISTRO']);
           <table width="100%" border="0" cellpadding="1" cellspacing="1" bordercolor="#FFFFFF">
             <tr>
               <td height="32" align="right" bgcolor="#CCCCCC">Documento de Registro :</td>
-              <td style="font-weight: bold"><?php echo utf8_decode($OMS); ?></td>
+              <td style="font-weight: bold"><?php echo htmlspecialchars(str_replace("Â°", "°", $OMS), ENT_QUOTES, 'UTF-8'); ?></td>
             </tr>
             <tr>
               <td width="28%" height="32" align="right" bgcolor="#CCCCCC">Asociación Seleccionada :</td>
-              <td width="72%" style="font-weight: bold"><?php echo utf8_decode($ASOCIACION); ?>
-                <input name="COD_ASOCIACION" type="hidden" id="COD_ASOCIACION" value="<?php echo $COD_ASOCIACION; ?>" />
-                <input name="ASOCIACION" type="hidden" id="ASOCIACION" value="<?php echo utf8_decode($ASOCIACION); ?>" />
+              <td width="72%" style="font-weight: bold"><?php echo htmlspecialchars($ASOCIACION, ENT_QUOTES, 'UTF-8'); ?>
+                <input name="COD_ASOCIACION" type="hidden" id="COD_ASOCIACION" value="<?php echo htmlspecialchars($COD_ASOCIACION, ENT_QUOTES, 'UTF-8'); ?>" />
+                <input name="ASOCIACION" type="hidden" id="ASOCIACION" value="<?php echo htmlspecialchars($ASOCIACION, ENT_QUOTES, 'UTF-8'); ?>" />
                 <input name="REG" type="hidden" id="REG" value="1" />
               </td>
             </tr>

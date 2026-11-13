@@ -1,34 +1,80 @@
-<?php  require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');require_once('../Control_Sesiones_Forms/Loading.php'); require '../Conexion_BD/Dbms.php';
- 
+<?php
+header('Content-Type: text/html; charset=UTF-8');
+require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
+require '../Conexion_BD/Dbms.php';
+function modificacionAsociacionRequestValue($name, $includeGet = false)
+{
+    $sources = $includeGet ? array($_POST, $_GET) : array($_POST);
+    foreach ($sources as $source) {
+        if (isset($source[$name]) && is_scalar($source[$name])) {
+            return (string)$source[$name];
+        }
+    }
+    return '';
+}
+
+$COD_ASOCIACION=modificacionAsociacionRequestValue('COD_ASOCIACION', true);
+if($COD_ASOCIACION===''){ $COD_ASOCIACION=isset($_SESSION['COD_ASOCIACION']) ? $_SESSION['COD_ASOCIACION'] : ''; }
+$ASOCIACION=modificacionAsociacionRequestValue('ASOCIACION', true);
+if($ASOCIACION===''){ $ASOCIACION=isset($_SESSION['ASOCIACION']) ? $_SESSION['ASOCIACION'] : ''; }
 $_SESSION['COD_ASOCIACION']=$COD_ASOCIACION;
-$_SESSION['ASOCIACION']=utf8_decode($ASOCIACION); 
+$_SESSION['ASOCIACION']=$ASOCIACION;
+$txtMod=modificacionAsociacionRequestValue('txtMod');
+$txtCarpeta=modificacionAsociacionRequestValue('txtCarpeta');
+$txtDescripcion=modificacionAsociacionRequestValue('txtDescripcion');
+$txtOrdenanzaMunicipal=modificacionAsociacionRequestValue('txtOrdenanzaMunicipal');
+$txtZona=modificacionAsociacionRequestValue('txtZona');
+$txtDireccion=modificacionAsociacionRequestValue('txtDireccion');
+$txtPuestos=(int)modificacionAsociacionRequestValue('txtPuestos');
+$txtCentralera=(int)modificacionAsociacionRequestValue('txtCentralera');
+$txtKiosko=(int)modificacionAsociacionRequestValue('txtKiosko');
+$txtObservacion=modificacionAsociacionRequestValue('txtObservacion');
+$txtCodRegistro=modificacionAsociacionRequestValue('txtCodRegistro');
 if($txtMod==1){
 	//copia archivo pdf o.m.
- if ((($_FILES["txtArchivo"]["type"] == "application/pdf") ||
-    ($_FILES["txtArchivo"]["type"] == "application/pdf") ||
-    ($_FILES["txtArchivo"]["type"] == "application/pdf")) &&
+ if ($_FILES["txtArchivo"]["type"] == "application/pdf" &&
     ($_FILES["txtArchivo"]["size"] < 400000000)) {
 
 
-      if ($_FILES["txtArchivo"]["error"] > 0) {
+      if ($_FILES["txtArchivo"]["error"] != UPLOAD_ERR_OK) {
 		  echo "<script>alert('Error de Archivo.')</script>";
         //echo $_FILES["txtArchivo"]["error"] . "<br />";
       } else {
 
-          if (file_exists("txtArchivo/" . $_FILES["archivo"]["name"])) {
+          $NOMBRE_SUBIDO = basename($_FILES["txtArchivo"]["name"]);
+          $NOMBRE_ARCHIVO_GENERADO = date('YmdHis') . "_" . $NOMBRE_SUBIDO;
+          $NOMBRE_ARCHIVO = "ORDENANZA_MUNICIPAL/generated/" . $NOMBRE_ARCHIVO_GENERADO;
+          $DIRECTORIO_ARCHIVOS = dirname(__FILE__) . DIRECTORY_SEPARATOR . "ORDENANZA_MUNICIPAL" . DIRECTORY_SEPARATOR . "generated";
+          $RUTA_ARCHIVO = $DIRECTORIO_ARCHIVOS . DIRECTORY_SEPARATOR . $NOMBRE_ARCHIVO_GENERADO;
+          if (!is_dir($DIRECTORIO_ARCHIVOS) && !mkdir($DIRECTORIO_ARCHIVOS, 0755, true)) {
+            trigger_error('No se pudo crear el directorio para guardar la ordenanza municipal.', E_USER_ERROR);
+          } elseif (file_exists($RUTA_ARCHIVO)) {
             echo $_FILES["txtArchivo"]["name"] . " ya existe. ";
+          } elseif (!is_uploaded_file($_FILES["txtArchivo"]["tmp_name"]) || !move_uploaded_file($_FILES["txtArchivo"]["tmp_name"], $RUTA_ARCHIVO)) {
+            trigger_error('No se pudo guardar el documento PDF de la asociación.', E_USER_ERROR);
           } else {
-
-            move_uploaded_file($_FILES["txtArchivo"]["tmp_name"],
-          "ORDENANZA_MUNICIPAL/" . $_FILES["txtArchivo"]["name"]);
             
-			 $NOMBRE_ARCHIVO = "ORDENANZA_MUNICIPAL/" . $_FILES['txtArchivo']['name'];
 			 $TOTAL_AFILIADOS=$txtPuestos + $txtCentralera + $txtKiosko;
 $txtCarpeta=trim($txtCarpeta);
 $txtDescripcion=trim($txtDescripcion);
 $txtOrdenanzaMunicipal=trim($txtOrdenanzaMunicipal);
 $txtZona=trim($txtZona);
 $txtDireccion=trim($txtDireccion);
+$txtCarpeta=mysql_real_escape_string($txtCarpeta);
+$txtDescripcion=mysql_real_escape_string($txtDescripcion);
+$txtOrdenanzaMunicipal=mysql_real_escape_string($txtOrdenanzaMunicipal);
+$txtZona=mysql_real_escape_string($txtZona);
+$txtDireccion=mysql_real_escape_string($txtDireccion);
+$txtObservacion=mysql_real_escape_string($txtObservacion);
+$txtCodRegistro=mysql_real_escape_string($txtCodRegistro);
+$NOMBRE_ARCHIVO=mysql_real_escape_string($NOMBRE_ARCHIVO);
+$COD_ASOCIACION=mysql_real_escape_string($COD_ASOCIACION);
+$US_SIOI=mysql_real_escape_string($US_SIOI);
+$SIAUNOMBRES=mysql_real_escape_string($SIAUNOMBRES);
+$USPRIMERAPELLIDO=mysql_real_escape_string($USPRIMERAPELLIDO);
+$SIAUSEGUNDOAPELLIDO=mysql_real_escape_string($SIAUSEGUNDOAPELLIDO);
+$hostname=mysql_real_escape_string($hostname);
+$hostlocal=mysql_real_escape_string($hostlocal);
 $query = mysql_query("UPDATE reg_asociacion  SET ESTADO='DATO MODIFICADO POR EL USUARIO: $US_SIOI - $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO EN FECHA: $FECHA HORA: $HORA' where CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO'")or die ("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_asociacion_puesto.");
 
 $query = mysql_query("UPDATE reg_asociacion_puesto  SET ESTADO='DATO MODIFICADO POR EL USUARIO: $US_SIOI - $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO EN FECHA: $FECHA HORA: $HORA' where CODIGO_ASOCIACION='$COD_ASOCIACION' and ESTADO='ACTIVO'")or die ("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_asociacion_puesto.");
@@ -60,11 +106,13 @@ $liq=mysql_query("select * from reg_asociacion_puesto where CODIGO_ASOCIACION='$
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel='StyleSheet' href='../Css_Formularios/frmProcesos.css' type="text/css"><script src='Js/frmValida.js' type="text/javascript"></script>
 </head>
-<form  method="post" action='frmModificacionAsociacion1.php' enctype="multipart/form-data">
-<body oncopy="return false" onpaste="return false">
+<body>
+<form method="post" action='frmModificacionAsociacion1.php' enctype="multipart/form-data">
+<input type="hidden" name="COD_ASOCIACION" value="<?php echo htmlspecialchars($COD_ASOCIACION, ENT_QUOTES, 'UTF-8'); ?>" />
+<input type="hidden" name="ASOCIACION" value="<?php echo htmlspecialchars($ASOCIACION, ENT_QUOTES, 'UTF-8'); ?>" />
 
 <table width="100%" border="0">
   <tr>
@@ -98,17 +146,17 @@ $liq=mysql_query("select * from reg_asociacion_puesto where CODIGO_ASOCIACION='$
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Nombre de la Asociación :</td>
-        <td class="comentario"><input name="txtDescripcion" type="text" id="txtDescripcion" onKeyPress="return soloNumAlfSig(event);" onchange="javascript:this.value=this.value.toUpperCase();"  onkeyup="return fileValidation();" value="<?php echo $ASOCIACION;?>" size="50" placeholder="NOMBRE DE LA ASOCIACION" required/></td>
+        <td class="comentario"><input name="txtDescripcion" type="text" id="txtDescripcion" onchange="javascript:this.value=this.value.toUpperCase();"  onkeyup="return fileValidation();" value="<?php echo $ASOCIACION;?>" size="50" placeholder="NOMBRE DE LA ASOCIACION" required/></td>
         <td class="comentario">&nbsp;</td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Zona de Asentamiento :</td>
-        <td class="comentario"><input name="txtZona" type="text" id="txtZona" onKeyPress="return soloNumAlfSig(event);" onchange="javascript:this.value=this.value.toUpperCase();"  onkeyup="return fileValidation();" value="<?php echo $ZONA_UBICACION;?>" size="50" maxlength="1000" placeholder="ZONA DE ASENTAMIENTO" required="required"/></td>
+        <td class="comentario"><input name="txtZona" type="text" id="txtZona" onchange="javascript:this.value=this.value.toUpperCase();"  onkeyup="return fileValidation();" value="<?php echo $ZONA_UBICACION;?>" size="50" maxlength="1000" placeholder="ZONA DE ASENTAMIENTO" required="required"/></td>
         <td class="comentario">&nbsp;</td>
       </tr>
       <tr>
         <td align="right" bgcolor="#CCCCCC"><span class="ASTERISCO">*</span> Direccion descriptiva de puestos de Venta :</td>
-        <td class="comentario"><textarea name="txtDireccion" id="txtDireccion" cols="38" maxlength="1000" rows="2" onChange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation();" onKeyPress="return soloNumAlfSig(event);" placeholder="DIRECCION DESCRIPTIVA DE PUESTOS DE VENTA." required><?php echo $DIRECCION;?></textarea></td>
+        <td class="comentario"><textarea name="txtDireccion" id="txtDireccion" cols="38" maxlength="1000" rows="2" onChange="javascript:this.value=this.value.toUpperCase();" onkeyup="return fileValidation();" placeholder="DIRECCION DESCRIPTIVA DE PUESTOS DE VENTA." required><?php echo $DIRECCION;?></textarea></td>
         <td class="comentario">&nbsp;</td>
       </tr>
       <tr>
@@ -129,7 +177,7 @@ $liq=mysql_query("select * from reg_asociacion_puesto where CODIGO_ASOCIACION='$
       <tr>
         <td align="right" bgcolor="#CCCCCC">Observaciones :</td>
         <td><span class="comentario">
-          <textarea name="txtObservacion" id="txtObservacion" cols="38" rows="2" maxlength="255" onkeypress="return soloNumAlfSig(event);" onchange="javascript:this.value=this.value.toUpperCase();" placeholder="OBSERVACIONES." ><?php echo $OBSERVACIONES;?></textarea>
+          <textarea name="txtObservacion" id="txtObservacion" cols="38" rows="2" maxlength="255" onchange="javascript:this.value=this.value.toUpperCase();" placeholder="OBSERVACIONES." ><?php echo $OBSERVACIONES;?></textarea>
         </span></td>
         <td>&nbsp;</td>
       </tr>
@@ -163,5 +211,6 @@ $liq=mysql_query("select * from reg_asociacion_puesto where CODIGO_ASOCIACION='$
     <td class="ASTERISCO">VER. 1</td>
   </tr>
 </table>
-</body></form>
+</form>
+</body>
 </html><?php  require '../Conexion_BD/Cerrar_Dbms.php';?>

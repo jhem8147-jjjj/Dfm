@@ -1,25 +1,32 @@
 ﻿<?php require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
 require_once('../Control_Sesiones_Forms/Loading.php'); 
 require '../Conexion_BD/Dbms.php';
+mysql_set_charset("utf8", $conexion_usuarios) or die("NO SE PUDO CONFIGURAR LA CONEXION UTF-8: " . mysql_error($conexion_usuarios));
 if($txtMod==1){
+
+// Protege los datos ingresados antes de incluirlos en consultas SQL.
+$txtDocumentoRespaldoSQL = mysql_real_escape_string($txtDocumentoRespaldo, $conexion_usuarios);
+$txtAutorizadoSQL = mysql_real_escape_string($txtAutorizado, $conexion_usuarios);
+$sltCargoSQL = mysql_real_escape_string($sltCargo, $conexion_usuarios);
+$sltZonaTributariaSQL = mysql_real_escape_string($sltZonaTributaria, $conexion_usuarios);
 
 //ELIMINA LOS REGISTROS ACTIVOS O SUBIDOS CON ANTERIOR ZONA TRIBUTARIA
 
-$query = mysql_query("UPDATE reg_contribuyente_habilitado_pago  SET ESTADO='NO ACTIVO',ESTADO_REGISTRO='ZONA TRIBUTARIA MODIFICADA POR: $US_SIOI-$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO FECHA: $FECHA Hrs. $HORA.',ESTADO_PAGO='ZONA TRIBUTARIA MODIFICADA POR: $US_SIOI-$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO FECHA: $FECHA Hrs. $HORA.',ESTADO_ORDEN_PAGO='ZONA TRIBUTARIA MODIFICADA POR: $US_SIOI-$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO FECHA: $FECHA Hrs. $HORA.',OBSERVACIONES='ZONA TRIBUTARIA MODIFICADA POR: $US_SIOI-$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO FECHA: $FECHA Hrs. $HORA, DOCUMENTO $txtDocumentoRespaldo AUTORIZADO: $txtAutorizado-$sltCargo.' where ESTADO='ACTIVO' and CODIGO_ASOCIACION='$COD_ASOCIACION' and CODIGO_ZONA='$CODIGOACTUAL' and ESTADO='ACTIVO'")or die ("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_contribuyente_habilitado_pago.");
+$query = mysql_query("UPDATE reg_contribuyente_habilitado_pago  SET ESTADO='NO ACTIVO',ESTADO_REGISTRO='ZONA TRIBUTARIA MODIFICADA POR: $US_SIOI-$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO FECHA: $FECHA Hrs. $HORA.',ESTADO_PAGO='ZONA TRIBUTARIA MODIFICADA POR: $US_SIOI-$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO FECHA: $FECHA Hrs. $HORA.',ESTADO_ORDEN_PAGO='ZONA TRIBUTARIA MODIFICADA POR: $US_SIOI-$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO FECHA: $FECHA Hrs. $HORA.',OBSERVACIONES='ZONA TRIBUTARIA MODIFICADA POR: $US_SIOI-$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO FECHA: $FECHA Hrs. $HORA, DOCUMENTO $txtDocumentoRespaldoSQL AUTORIZADO: $txtAutorizadoSQL-$sltCargoSQL.' where ESTADO='ACTIVO' and CODIGO_ASOCIACION='$COD_ASOCIACION' and CODIGO_ZONA='$CODIGOACTUAL' and ESTADO='ACTIVO'", $conexion_usuarios) or die("NO SE PUDO ACTUALIZAR reg_contribuyente_habilitado_pago. Error MySQL: " . mysql_error($conexion_usuarios));
 	
 $COD_ASOC=date('Ymd His');
 $COD_REGISTRO=date('Ymd His');
 //actualiza la zona tributaria
 $query = mysql_query("UPDATE reg_asociacion_zona_tributaria  SET ESTADO='DATOS MODIFICADOS $US_SIOI - $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO, FECHA $FECHA Hrs. $HORA.' where CODIGO_ASOCIACION='$COD_ASOCIACION' AND CODIGO_ZONA='$CODIGOACTUAL' AND ESTADO='ACTIVO'")or die ("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_asociacion_zona_tributaria.");
 //BUSCA ZONA TRIBUTARIA
-$result=mysql_query("select * from zona_tributaria where DESCRIPCION='$sltZonaTributaria' and ESTADO='ACTIVO'"); while($row=mysql_fetch_array($result)){ $ZONATRIB=$row['CODIGO_ZONA'];$MONTO=$row['MONTO'];}	
+$result=mysql_query("select * from zona_tributaria where DESCRIPCION='$sltZonaTributariaSQL' and ESTADO='ACTIVO'", $conexion_usuarios); while($row=mysql_fetch_array($result)){ $ZONATRIB=$row['CODIGO_ZONA'];$MONTO=$row['MONTO'];}	
 //REGISTRA LA NUEVA ZONA TRIBUTARIA
 $sql1="insert into reg_asociacion_zona_tributaria(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,CODIGO_ZONA)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_ASOC','$COD_ASOCIACION','$ZONATRIB')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD REGISTRO reg_asociacion_zona_tributaria.");
 /*ACTUALIZA reg_contribuyente_asociacion*/
 $query = mysql_query("UPDATE reg_contribuyente_asociacion  SET CODIGO_ZONA='$ZONATRIB',OBSERVACIONES_MODIFICACIONES='MODIFICACION DE ZONA TRIBUTARIA $US_SIOI- $SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO FECHA: $FECHA Hrs. $HORA' where ESTADO='ACTIVO' and CODIGO_ASOCIACION='$COD_ASOCIACION' AND CODIGO_ZONA='$CODIGOACTUAL'")or die ("NO SE PUDO ACTUALIZAR LOS DATOS DEL reg_contribuyente_habilitado_pago.");
 
 //REGISTRA LA MODIFICACION DE LA ZONA TRIBUTARIA
-$sql1="insert into reg_contribuyente_transacciones(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,CODIGO_ZONA,TRANSACCION_1,DESCRIPCION_TRAMITE,OBSERVACIONES,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$COD_ASOCIACION','$ASOCIACION','$ZONATRIB','MODIFICACION DE ZONA TRIBUTARIA','MODIFICACION DE ZONA TRIBUTARIA $ASOCIACION','MODIFICACION DE ZONA TRIBUTARIA MEDIANTE DOCUMENTO $txtDocumentoRespaldo AUTORIZADO: $txtAutorizado-$sltCargo.','0')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones."); 			 
+$sql1="insert into reg_contribuyente_transacciones(PC_NAME,PC_IP,USUARIO,NOMBRE_USUARIO,FECHA,HORA,CODIGO_REGISTRO,CODIGO_ASOCIACION,ASOCIACION,CODIGO_ZONA,TRANSACCION_1,DESCRIPCION_TRAMITE,OBSERVACIONES,ENLACE)values('$hostname','$hostlocal','$US_SIOI','$SIAUNOMBRES $USPRIMERAPELLIDO $SIAUSEGUNDOAPELLIDO','$FECHA','$HORA','$COD_REGISTRO','$COD_ASOCIACION','$ASOCIACION','$ZONATRIB','MODIFICACION DE ZONA TRIBUTARIA','MODIFICACION DE ZONA TRIBUTARIA $ASOCIACION','MODIFICACION DE ZONA TRIBUTARIA MEDIANTE DOCUMENTO $txtDocumentoRespaldoSQL AUTORIZADO: $txtAutorizadoSQL-$sltCargoSQL.','0')";$result=mysql_query($sql1)or die ("NO SE PUDO REGISTRAR EN LA ENTIDAD reg_contribuyente_transacciones."); 			 
 echo "<script>alert('Se módifico la Zona Tributaria de la Asociación $ASOCIACION.')</script>";
 echo"<script> location.href='frmModAsocZonaTrib.php';</script>";
 }

@@ -47,7 +47,7 @@ $SWU=0;$FECHA_UFV=date('Y-m-d');$result=mysql_query("select * from historial_ufv
         and ASOCZT.CODIGO_ZONA=ZT.CODIGO_ZONA order by ASOC.DESCRIPCION"); while($row=mysql_fetch_array($result)){ ?>
         <tr>
           <td><?php $CONT++; echo $CONT; ?></td>
-          <td><?php echo $row[0]; ?></td>
+          <td><?php echo htmlspecialchars(str_replace("Â°", "°", $row[0]), ENT_QUOTES, 'UTF-8'); ?></td>
           <td><?php echo utf8_decode($row[1]); ?></td>
           <td><?php echo utf8_decode($row[6]); ?></td>
           <td align="center" style="font-weight: bold"><?php echo $row[4]; ?></td>
