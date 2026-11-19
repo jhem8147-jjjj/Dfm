@@ -1,4 +1,4 @@
-﻿<?php  
+<?php  
 require_once('../Control_Sesiones_Forms/frmControlSesionUsuario.php');
 require_once('../Control_Sesiones_Forms/Loading.php'); 
 require '../Conexion_BD/Dbms.php';
