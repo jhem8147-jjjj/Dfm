@@ -41,4 +41,8 @@
 *.pdf
 /*.pdf
 
+# Entorno local Podman/Docker
+.env
+docker/dumps/*.sql
+
 # End of https://www.toptal.com/developers/gitignore/api/phpunit
