@@ -1,0 +1,61 @@
+services:
+  db:
+    image: docker.io/library/mysql:5.5.62
+    platform: linux/amd64
+    container_name: dfm-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_ROOT_HOST: "%"
+      TZ: America/La_Paz
+    command:
+      - --character-set-server=utf8
+      - --collation-server=utf8_general_ci
+      - --max_allowed_packet=1G
+      - --sql-mode=
+      - --default-time-zone=-04:00
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  db-init:
+    image: docker.io/library/mysql:5.5.62
+    platform: linux/amd64
+    container_name: dfm-db-init
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      TZ: America/La_Paz
+    volumes:
+      - ./docker/db/init.sh:/init.sh:ro
+      - "${DUMP_DIR:-./docker/dumps}/usuarios_drm.sql:/backup/usuarios_drm.sql:ro"
+      - "${DUMP_DIR:-./docker/dumps}/otros_ingresos.sql:/backup/otros_ingresos.sql:ro"
+    entrypoint: ["/bin/bash", "/init.sh"]
+
+  web:
+    image: docker.io/library/php:5.3-apache
+    platform: linux/amd64
+    container_name: dfm-web
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: "123456"
+      TZ: America/La_Paz
+    entrypoint: ["/bin/bash", "/var/www/html/docker/php/entrypoint.sh"]
+    command: ["apache2", "-DFOREGROUND"]
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/php/php.ini:/usr/local/lib/php.ini:ro
+
+volumes:
+  mysql_data:
+    name: dfm_mysql_data
